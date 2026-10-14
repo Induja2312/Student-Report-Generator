@@ -4,7 +4,8 @@ app.py
 Main Streamlit Web Application:
 "Personalized Report Generation using Templates and Python"
 
-Postgraduate Coursework - Advanced Python Programming
+Master of Computer Applications (MCA) Coursework
+Theme: Warm Cream Background with High-Contrast Espresso Typography
 """
 
 import streamlit as st
@@ -25,7 +26,7 @@ from sample_data import SAMPLE_STUDENTS, DEFAULT_SUBJECT_NAMES, DEPARTMENTS, SEM
 # 1. Page Configuration & Custom CSS
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="Personalized Report Generation using Templates and Python",
+    page_title="Personalized Report Generation | MCA Academic System",
     page_icon="🎓",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -34,7 +35,7 @@ st.set_page_config(
 # Custom CSS for modern warm cream academic dashboard styling
 st.markdown("""
 <style>
-    /* Warm Cream Background for Entire Application */
+    /* Warm Cream Canvas for Entire Application */
     .stApp {
         background-color: #FAF7EE !important;
         color: #2A201A !important;
@@ -60,6 +61,7 @@ st.markdown("""
         font-weight: 800;
         margin: 0;
         color: #FFF8EE !important;
+        letter-spacing: -0.3px;
     }
     .main-header p {
         font-size: 14px;
@@ -69,20 +71,11 @@ st.markdown("""
     }
 
     /* High Visibility Typography on Cream Canvas */
-    h1, h2, h3, h4, h5, h6, p, label, .stMarkdown, div[data-testid="stMarkdownContainer"] p {
+    h1, h2, h3, h4, h5, h6, label, .stMarkdown, div[data-testid="stMarkdownContainer"] p {
         color: #2A201A !important;
     }
-    .main-header h1, .main-header p, .stButton > button, .stDownloadButton > button {
-        color: #FFFFFF !important;
-    }
-
-    /* Metric Badges */
-    .metric-badge {
-        display: inline-block;
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-weight: 700;
-        font-size: 13px;
+    .main-header h1, .main-header p {
+        color: #FFF8EE !important;
     }
 
     /* Sidebar Styling */
@@ -112,10 +105,12 @@ st.markdown("""
     div[data-testid="stMetricLabel"] p {
         color: #6B5848 !important;
         font-weight: 600 !important;
+        font-size: 13px !important;
     }
     div[data-testid="stMetricValue"] div {
         color: #2A201A !important;
         font-weight: 800 !important;
+        font-size: 22px !important;
     }
 
     /* Form Input Fields Visibility */
@@ -128,21 +123,65 @@ st.markdown("""
         color: #2A201A !important;
     }
 
-    /* Buttons in Warm Mahogany */
-    .stButton > button, .stDownloadButton > button {
-        width: 100%;
-        background-color: #8B4513 !important;
-        color: #FFFFFF !important;
-        border: none !important;
+    /* =========================================================================
+       BUTTON STYLING: Rich Warm Mahogany Background with Crisp Pure White Text
+       Guarantees high contrast and 100% text readability
+       ========================================================================= */
+    .stButton > button,
+    .stDownloadButton > button,
+    div[data-testid="stFormSubmitButton"] > button {
+        width: 100% !important;
+        background: linear-gradient(135deg, #78350F 0%, #5C270A 100%) !important;
+        border: 1px solid #451A03 !important;
         border-radius: 8px !important;
-        font-weight: 700 !important;
-        font-size: 15px !important;
-        padding: 10px 20px !important;
+        padding: 11px 22px !important;
+        box-shadow: 0 2px 6px rgba(69, 26, 3, 0.22) !important;
         transition: all 0.2s ease !important;
     }
-    .stButton > button:hover, .stDownloadButton > button:hover {
-        background-color: #A0522D !important;
+
+    /* Force all inner text, p, div, span inside buttons to be Crisp White */
+    .stButton > button *,
+    .stButton > button p,
+    .stButton > button div,
+    .stButton > button span,
+    .stDownloadButton > button *,
+    .stDownloadButton > button p,
+    .stDownloadButton > button div,
+    .stDownloadButton > button span,
+    div[data-testid="stFormSubmitButton"] > button *,
+    div[data-testid="stFormSubmitButton"] > button p,
+    div[data-testid="stFormSubmitButton"] > button div,
+    div[data-testid="stFormSubmitButton"] > button span {
         color: #FFFFFF !important;
+        fill: #FFFFFF !important;
+        font-weight: 700 !important;
+        font-size: 15px !important;
+        letter-spacing: 0.3px !important;
+    }
+
+    /* Button Hover State */
+    .stButton > button:hover,
+    .stDownloadButton > button:hover,
+    div[data-testid="stFormSubmitButton"] > button:hover {
+        background: linear-gradient(135deg, #92400E 0%, #78350F 100%) !important;
+        border-color: #5C270A !important;
+        box-shadow: 0 4px 10px rgba(69, 26, 3, 0.28) !important;
+    }
+
+    .stButton > button:hover *,
+    .stDownloadButton > button:hover *,
+    div[data-testid="stFormSubmitButton"] > button:hover * {
+        color: #FFFDF9 !important;
+    }
+
+    /* Tab Headers */
+    button[data-baseweb="tab"] {
+        font-weight: 700 !important;
+        font-size: 15px !important;
+    }
+    button[data-baseweb="tab"][aria-selected="true"] {
+        color: #78350F !important;
+        border-bottom-color: #78350F !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -201,40 +240,40 @@ def load_preset(student_key: str):
 with st.sidebar:
     st.image(
         "https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/graduation-cap.svg",
-        width=48
+        width=44
     )
-    st.markdown("### 🎓 Classroom Demo Presets")
-    st.caption("Select a sample student profile to populate the form instantly for your presentation:")
+    st.markdown("### Classroom Demo Presets")
+    st.caption("Select a pre-configured student profile to populate the form instantly for presentation:")
 
     chosen_preset = st.selectbox(
-        "Choose Demonstration Profile:",
+        "Select Profile:",
         options=list(SAMPLE_STUDENTS.keys()),
         index=0
     )
 
-    if st.button("📥 Load Profile into Form", use_container_width=True):
+    if st.button("Load Selected Profile", use_container_width=True):
         load_preset(chosen_preset)
-        st.toast(f"Loaded {chosen_preset.split('(')[0].strip()}'s profile!", icon="✅")
+        st.toast(f"Loaded {chosen_preset.split('(')[0].strip()}'s profile successfully.", icon="✔")
 
     st.markdown("---")
-    st.markdown("### ⚙️ System Technology Stack")
+    st.markdown("### Technology Architecture")
     st.markdown("""
-    - **Language:** Python 3
-    - **UI Engine:** Streamlit
+    - **Language:** Python 3.11
+    - **Web Framework:** Streamlit
     - **Data Pipeline:** Pandas
-    - **Visualization:** Matplotlib
+    - **Visual Analytics:** Matplotlib (`Agg`)
     - **Document Engine:** ReportLab Platypus
-    - **Architecture:** Decoupled Template Pattern
+    - **Design Pattern:** Decoupled Template Engine
     """)
 
     st.markdown("---")
-    st.markdown("### 📏 Grading Thresholds")
+    st.markdown("### Grading Standards & Thresholds")
     st.markdown("""
-    * **Excellent:** $\ge 85\%$
-    * **Good:** $70\% - 84.9\%$
-    * **Average:** $50\% - 69.9\%$
+    * **Excellent (Honors):** $\ge 85\%$
+    * **Good (Consistent):** $70\% - 84.9\%$
+    * **Average (Pass):** $50\% - 69.9\%$
     * **Needs Improvement:** $< 50\%$
-    * **Attendance Standard:** $\ge 75\%$
+    * **Attendance Eligibility:** $\ge 75\%$
     """)
 
 
@@ -244,35 +283,35 @@ with st.sidebar:
 st.markdown("""
 <div class="main-header">
     <h1>Personalized Report Generation using Templates and Python</h1>
-    <p>Advanced Python Programming Coursework &bull; Automated Academic Appraisal & PDF Generation System</p>
+    <p>Department of Computer Applications (MCA) &bull; Automated Academic Appraisal & Vector PDF Generation System</p>
 </div>
 """, unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
 # 5. Two-Tab Layout: [1] Student Input Form | [2] Live Report & PDF
 # -----------------------------------------------------------------------------
-tab_input, tab_preview = st.tabs(["📝 1. Student Information & Marks Input", "📊 2. Generated Report & Download PDF"])
+tab_input, tab_preview = st.tabs(["1. Student Information & Marks Entry", "2. Academic Report & PDF Export"])
 
 with tab_input:
-    st.markdown("#### Enter Student Academic Records")
-    st.info("💡 **Presentation Tip:** You can quickly load sample profiles from the sidebar or manually adjust any value below.")
+    st.markdown("#### Student Coursework Information")
+    st.info("**Quick Guidance:** Load sample student profiles from the sidebar presets or enter custom coursework marks below.")
 
     with st.form("student_input_form", clear_on_submit=False):
         col1, col2 = st.columns(2)
 
         with col1:
-            st.markdown("##### 👤 Student Identification")
+            st.markdown("##### Student Identification")
             name_input = st.text_input(
                 "Full Name:",
                 value=st.session_state.name_val,
                 placeholder="e.g. Induja",
-                help="Enter student's official full name."
+                help="Enter student's official registered full name."
             )
             roll_input = st.text_input(
                 "Roll Number / Registration ID:",
                 value=st.session_state.roll_val,
                 placeholder="e.g. 25MX101",
-                help="Unique student identification number."
+                help="Unique student identification number (25MX--- format)."
             )
             dept_input = st.selectbox(
                 "Academic Department (Recommended: MCA):",
@@ -281,7 +320,7 @@ with tab_input:
             )
 
         with col2:
-            st.markdown("##### 📅 Enrollment & Attendance")
+            st.markdown("##### Enrollment & Attendance")
             sem_input = st.selectbox(
                 "Current Semester:",
                 options=SEMESTERS,
@@ -297,7 +336,7 @@ with tab_input:
             )
 
         st.markdown("---")
-        st.markdown("##### 📚 Subject Coursework Marks (Out of 100)")
+        st.markdown("##### Coursework Marks (Scale 0–100)")
 
         sub_cols = st.columns(5)
         entered_subjects = {}
@@ -316,7 +355,7 @@ with tab_input:
                 entered_subjects[sub_name] = val
 
         st.markdown("<br>", unsafe_allow_html=True)
-        generate_clicked = st.form_submit_button("🚀 Generate Personalized Report", use_container_width=True, type="primary")
+        generate_clicked = st.form_submit_button("Generate Academic Report", use_container_width=True, type="primary")
 
     # Handle Form Submission & Validation
     if generate_clicked:
@@ -331,7 +370,7 @@ with tab_input:
         )
 
         if not is_valid:
-            st.error("❌ **Validation Failed:** Please resolve the following errors before proceeding:")
+            st.error("**Validation Notice:** Please correct the following inputs before proceeding:")
             for err in validation_errors:
                 st.write(f"- {err}")
         else:
@@ -344,7 +383,7 @@ with tab_input:
                 "attendance": att_input,
                 "subjects": entered_subjects
             }
-            with st.spinner("Processing marks, applying appraisal rules, and generating graphics..."):
+            with st.spinner("Processing marks, applying appraisal rules, and compiling graphics..."):
                 processed_results = process_student_data(payload)
 
                 # 3. Chart Generation (Matplotlib)
@@ -367,7 +406,7 @@ with tab_input:
                 st.session_state.chart_fig = fig
                 st.session_state.pdf_bytes = pdf_output_bytes
 
-            st.success("✅ **Report Successfully Generated!** Check the 'Generated Report & Download PDF' tab to review and download.")
+            st.success("**Report Successfully Generated.** You can now review the analysis in Tab 2.")
 
 
 # -----------------------------------------------------------------------------
@@ -410,12 +449,12 @@ with tab_preview:
     # Top Action Bar with Download Button
     col_title, col_btn = st.columns([2.5, 1])
     with col_title:
-        st.markdown(f"### 📋 Report Preview: **{student['name']}** ({student['roll_no']})")
+        st.markdown(f"### Performance Report: **{student['name']}** ({student['roll_no']})")
     with col_btn:
         safe_name = student["name"].replace(" ", "_")
         pdf_filename = f"Performance_Report_{safe_name}_{student['roll_no']}.pdf"
         st.download_button(
-            label="📥 Download PDF Report",
+            label="Download Official PDF Report",
             data=st.session_state.pdf_bytes,
             file_name=pdf_filename,
             mime="application/pdf",
@@ -462,11 +501,11 @@ with tab_preview:
     c_chart, c_table = st.columns([1.2, 1])
 
     with c_chart:
-        st.markdown("##### 📊 Comparative Performance Chart")
+        st.markdown("##### Comparative Performance Analytics")
         st.pyplot(st.session_state.chart_fig, use_container_width=True)
 
     with c_table:
-        st.markdown("##### 📑 Subject-wise Performance Summary")
+        st.markdown("##### Coursework Performance Breakdown")
         df_display = rep["dataframe"][["Subject Name", "Marks Obtained", "Grade", "Status"]]
         st.dataframe(
             df_display,
@@ -474,25 +513,25 @@ with tab_preview:
             hide_index=True
         )
 
-        st.markdown("##### 🎯 Academic Highlights")
-        st.markdown(f"- **Top Subject:** `{metrics['highest_subject'][0]}` ({metrics['highest_subject'][1]:.0f}/100)")
-        st.markdown(f"- **Lowest Subject:** `{metrics['lowest_subject'][0]}` ({metrics['lowest_subject'][1]:.0f}/100)")
-        st.markdown(f"- **Category Rationale:** {metrics['category_desc']}")
+        st.markdown("##### Academic Highlights")
+        st.markdown(f"- **Top Scoring Subject:** `{metrics['highest_subject'][0]}` ({metrics['highest_subject'][1]:.0f}/100)")
+        st.markdown(f"- **Lowest Scoring Subject:** `{metrics['lowest_subject'][0]}` ({metrics['lowest_subject'][1]:.0f}/100)")
+        st.markdown(f"- **Evaluation Standing:** {metrics['category_desc']}")
 
     st.markdown("---")
 
     # Personalized Feedback Callout
-    st.markdown("##### 💬 Personalized Academic Feedback & Recommendations")
+    st.markdown("##### Personalized Appraisal & Faculty Recommendations")
     for fb_point in rep["feedback"]:
-        if "⚠️" in fb_point:
+        if "Shortage Alert" in fb_point or "Remedial Priority" in fb_point or "Remedial Advisory" in fb_point:
             st.warning(fb_point)
-        elif "🌟" in fb_point or "🏆" in fb_point:
+        elif "Honors Commendation" in fb_point or "Academic Distinction" in fb_point or "Attendance Commendation" in fb_point:
             st.success(fb_point)
         else:
             st.info(fb_point)
 
     # Full Formatted HTML Report Card Preview
-    with st.expander("🔍 View Pre-Rendered Template Layout (Official Format)", expanded=False):
+    with st.expander("View Template Schema (Official Institutional Layout)", expanded=False):
         st.caption("This layout reflects the decoupled template structure used to compile both the web representation and the vector PDF document:")
         html_preview = render_html_report_preview(rep, DEFAULT_REPORT_CONFIG)
         st.markdown(html_preview, unsafe_allow_html=True)

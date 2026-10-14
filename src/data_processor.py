@@ -138,65 +138,65 @@ def generate_personalized_feedback(
     # Point 1: Academic Standing & Category feedback
     if category == "Excellent":
         feedback_points.append(
-            f"🌟 Academic Excellence: {name} has demonstrated exemplary mastery across the curriculum "
-            f"with an overall aggregate of {percentage:.1f}%. Maintain this stellar momentum."
+            f"[Honors Commendation] {name} has demonstrated exemplary mastery across the curriculum "
+            f"with an overall aggregate of {percentage:.1f}%. Maintain this stellar academic momentum."
         )
     elif category == "Good":
         feedback_points.append(
-            f"👍 Strong Foundation: {name} shows commendable consistency with a solid aggregate of "
-            f"{percentage:.1f}%. With slight refinement in weaker areas, an Excellent grade is well within reach."
+            f"[Consistent Performance] {name} shows commendable consistency with a solid aggregate of "
+            f"{percentage:.1f}%. With targeted preparation in weaker areas, an Excellent grade is well within reach."
         )
     elif category == "Average":
         feedback_points.append(
-            f"📈 Steady Progress: {name} meets standard course requirements with {percentage:.1f}%. "
+            f"[Academic Benchmark] {name} meets standard university course requirements with {percentage:.1f}%. "
             f"Focusing on structured daily revision will yield substantial score improvements."
         )
     else:
         feedback_points.append(
-            f"⚠️ Academic Support Recommended: {name}'s aggregate stands at {percentage:.1f}%. "
-            f"We strongly encourage attending departmental mentoring and peer-study workshops."
+            f"[Remedial Advisory] {name}'s aggregate stands at {percentage:.1f}%. "
+            f"We strongly recommend attending departmental mentoring sessions and guided study workshops."
         )
 
     # Point 2: Highest-scoring subject (Praise Strength)
     high_name, high_mark = highest_sub
     feedback_points.append(
-        f"🏆 Core Strength: Outstanding performance in '{high_name}' with a score of {high_mark:.1f}/100. "
-        f"This subject highlights your analytical aptitude."
+        f"[Academic Distinction] Outstanding performance in '{high_name}' with a score of {high_mark:.1f}/100. "
+        f"This subject highlights strong analytical and conceptual aptitude."
     )
 
     # Point 3: Lowest-scoring subject (Targeted Growth Advisory)
     low_name, low_mark = lowest_sub
     if low_mark < 50.0:
         feedback_points.append(
-            f"🎯 Urgent Focus Area: Immediate remedial attention is required in '{low_name}' ({low_mark:.1f}/100). "
-            f"Consult your course instructor for doubt-clearing and previous semester problem sets."
+            f"[Remedial Priority] Immediate remedial attention is required in '{low_name}' ({low_mark:.1f}/100). "
+            f"Consult course faculty for doubt resolution and solve previous examination problem sets."
         )
     elif low_mark < 70.0:
         feedback_points.append(
-            f"🎯 Focus Area: Dedicate extra practice hours to '{low_name}' ({low_mark:.1f}/100) "
-            f"to boost your overall aggregate further."
+            f"[Growth Focus Area] Dedicate additional practice hours to '{low_name}' ({low_mark:.1f}/100) "
+            f"to boost your overall cumulative aggregate."
         )
     else:
         feedback_points.append(
-            f"🎯 Balanced Performance: Even your lowest score is solid at {low_mark:.1f}/100 in '{low_name}'. "
+            f"[Balanced Curriculum] Even the lowest score remains solid at {low_mark:.1f}/100 in '{low_name}'. "
             f"Continuous revision will sustain this balanced performance."
         )
 
     # Point 4: Attendance Advisory
     if attendance >= 90.0:
         feedback_points.append(
-            f"📅 Attendance Commendation: Exemplary class presence of {attendance:.1f}%. "
-            f"Regular attendance directly reflects your academic discipline."
+            f"[Attendance Commendation] Exemplary classroom attendance record of {attendance:.1f}%. "
+            f"Consistent attendance directly correlates with high academic discipline."
         )
     elif attendance >= 75.0:
         feedback_points.append(
-            f"📅 Attendance Status: Attendance is satisfactory at {attendance:.1f}% "
-            f"(meets university regulation threshold of 75%). Aim to keep it above 85%."
+            f"[Attendance Compliance] Attendance is satisfactory at {attendance:.1f}% "
+            f"(meets university regulation threshold of 75%). Aim to keep attendance above 85%."
         )
     else:
         feedback_points.append(
-            f"⚠️ Attendance Warning: Current attendance is {attendance:.1f}%, which is BELOW "
-            f"the mandatory 75% university eligibility requirement. Regularize attendance immediately."
+            f"[Attendance Shortage Alert] Current attendance is {attendance:.1f}%, which is BELOW "
+            f"the mandatory 75% university eligibility requirement. Regularize attendance immediately to maintain exam eligibility."
         )
 
     return feedback_points

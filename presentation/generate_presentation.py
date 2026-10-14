@@ -925,7 +925,7 @@ def build_presentation(output_pptx_path: str, images_dir: str):
                       "Reactive Dual-Tab Dashboard with Classroom Demo Presets")
 
     items_s9 = [
-        ("• 1-Click Sidebar Presets:", "Pre-loaded profiles (High Achiever, Needs Review)."),
+        ("• 1-Click MCA Presets:", "Pre-loaded profiles: Induja, Bhuvisha, Kumar, Rajesh, Dhivya (25MX---)."),
         ("• Dual-Tab Layout:", "Tab 1 for data input; Tab 2 for live report inspection."),
         ("• Live KPI Summary:", "Instant metrics for Total Marks, Aggregate %, Standing."),
         ("• In-Memory Download:", "1-Click download of vector PDF without file locking.")
