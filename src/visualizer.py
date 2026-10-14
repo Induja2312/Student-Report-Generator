@@ -59,10 +59,10 @@ def generate_performance_chart(
         else:
             formatted_labels.append(name)
 
-    # Set up figure and axis with high DPI for crisp presentation
+    # Set up figure and axis with warm cream background and high DPI
     fig, ax = plt.subplots(figsize=(8.5, 4.2), dpi=200)
-    fig.patch.set_facecolor("#FFFFFF")
-    ax.set_facecolor("#FAFAFA")
+    fig.patch.set_facecolor("#FFFDF8")
+    ax.set_facecolor("#FFFDF8")
 
     # Plot bars
     bars = ax.bar(
@@ -70,18 +70,18 @@ def generate_performance_chart(
         marks,
         color=bar_colors,
         width=0.55,
-        edgecolor="#334155",
-        linewidth=0.8,
+        edgecolor="#2A201A",
+        linewidth=0.9,
         zorder=3
     )
 
     # Reference Line: Passing Mark (50)
     ax.axhline(
         y=50,
-        color="#EF4444",
+        color="#DC2626",
         linestyle=":",
-        linewidth=1.2,
-        alpha=0.75,
+        linewidth=1.3,
+        alpha=0.85,
         label="Passing Mark (50)",
         zorder=2
     )
@@ -89,10 +89,10 @@ def generate_performance_chart(
     # Reference Line: Student Average
     ax.axhline(
         y=average_mark,
-        color="#4F46E5",
+        color="#8B4513",
         linestyle="--",
-        linewidth=1.5,
-        alpha=0.85,
+        linewidth=1.6,
+        alpha=0.9,
         label=f"Student Average ({average_mark:.1f})",
         zorder=2
     )
@@ -107,41 +107,41 @@ def generate_performance_chart(
             textcoords="offset points",
             ha="center",
             va="bottom",
-            fontsize=10,
+            fontsize=10.5,
             fontweight="bold",
-            color="#1E293B"
+            color="#2A201A"
         )
 
     # Styling the axes
     ax.set_ylim(0, 115)
-    ax.set_ylabel("Marks Obtained (Out of 100)", fontsize=10, fontweight="bold", color="#334155")
+    ax.set_ylabel("Marks Obtained (Out of 100)", fontsize=10, fontweight="bold", color="#2A201A")
     
     title_text = f"Subject-wise Performance Breakdown"
     if student_name:
         title_text += f" — {student_name}"
-    ax.set_title(title_text, fontsize=12, fontweight="bold", pad=14, color="#0F172A")
+    ax.set_title(title_text, fontsize=12, fontweight="bold", pad=14, color="#2A201A")
 
     # Grid styling
-    ax.yaxis.grid(True, linestyle="--", alpha=0.35, color="#94A3B8", zorder=1)
+    ax.yaxis.grid(True, linestyle="--", alpha=0.35, color="#D6C8B5", zorder=1)
     ax.xaxis.grid(False)
 
     # Remove top and right spines for a modern, clean aesthetic
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
-    ax.spines["left"].set_color("#94A3B8")
-    ax.spines["bottom"].set_color("#94A3B8")
+    ax.spines["left"].set_color("#8C7A6B")
+    ax.spines["bottom"].set_color("#8C7A6B")
 
     # Ticks formatting
-    ax.tick_params(axis="x", labelsize=9, colors="#1E293B")
-    ax.tick_params(axis="y", labelsize=9, colors="#475569")
+    ax.tick_params(axis="x", labelsize=9.5, colors="#2A201A")
+    ax.tick_params(axis="y", labelsize=9, colors="#2A201A")
 
     # Legend positioning
     ax.legend(
         loc="upper right",
         frameon=True,
-        facecolor="#FFFFFF",
-        edgecolor="#E2E8F0",
-        fontsize=8.5
+        facecolor="#FFFDF8",
+        edgecolor="#E5DACB",
+        fontsize=9
     )
 
     plt.tight_layout()

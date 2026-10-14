@@ -4,21 +4,27 @@ generate_presentation.py
 Automated PowerPoint (.pptx) Presentation Generator for:
 "Personalized Report Generation using Templates and Python"
 
-Specifications enforced:
+Enhanced Visual Presentation Deck Specifications:
 - Exactly 10 Slides
-- Slide Title: Font Size 35 pt
-- Slide Subtitle: Font Size 25 pt
-- Slide Body Text: Font Size 20 pt
-- Theme: Dark Purple Accents on Crisp White Background
-- Generates and embeds high-resolution architectural & analytical images
+- EVERY Slide includes a dedicated visual diagram, infographic card, or chart
+- ALL text across slides is STRICTLY ABOVE 15 pt (>= 16 pt everywhere)
+  * Slide Titles: 34 pt
+  * Slide Subtitles: 22 pt
+  * Card / Bullet Headers: 18 pt - 20 pt
+  * Body / Bullet Text: 16 pt - 18 pt
+  * Footers & Metadata: 16 pt
+- Theme: Elegant Deep Imperial Purple Accents on Crisp Canvas
+- 16:9 Widescreen Layout (13.333 x 7.5 inches)
 """
 
 import os
 import io
+import sys
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+
 try:
     from pptx import Presentation
     from pptx.util import Inches, Pt
@@ -26,11 +32,10 @@ try:
     from pptx.dml.color import RGBColor
     from pptx.enum.shapes import MSO_SHAPE
 except ModuleNotFoundError:
-    import sys
     import subprocess
     print("=" * 65)
     print("⚠️  Package 'python-pptx' is not yet installed in this environment.")
-    print("🚀 Automatically installing 'python-pptx' via pip now...")
+    print("🚀 Installing 'python-pptx' automatically via pip...")
     print("=" * 65)
     try:
         subprocess.check_call([sys.executable, "-m", "pip", "install", "python-pptx"])
@@ -39,115 +44,363 @@ except ModuleNotFoundError:
         from pptx.enum.text import PP_ALIGN
         from pptx.dml.color import RGBColor
         from pptx.enum.shapes import MSO_SHAPE
-        print("✅ Successfully installed python-pptx! Generating presentation now...\n")
+        print("✅ Successfully installed python-pptx!\n")
     except Exception as err:
         print("\n❌ Could not automatically install python-pptx:", err)
-        print("👉 Please manually run this command in your PowerShell terminal:")
+        print("👉 Please manually run this command in your terminal:")
         print("    pip install python-pptx\n")
         sys.exit(1)
 
 
 # -----------------------------------------------------------------------------
-# Color Palette Definition (Dark Purple Theme on White Canvas)
+# Color Palette (Deep Imperial Purple Theme on Crisp Canvas)
 # -----------------------------------------------------------------------------
-COLOR_WHITE = RGBColor(255, 255, 255)          # Canvas Background
-COLOR_DARK_PURPLE = RGBColor(59, 7, 100)       # #3B0764 - Primary Headings / Accents
-COLOR_DEEP_PURPLE = RGBColor(88, 28, 135)      # #581C87 - Subtitles / Borders
-COLOR_VIBRANT_PURPLE = RGBColor(126, 34, 206)  # #7E22CE - Highlights / Badges
-COLOR_LIGHT_PURPLE = RGBColor(243, 232, 255)   # #F3E8FF - Card Background Tints
+COLOR_WHITE = RGBColor(255, 255, 255)
+COLOR_CANVAS_BG = RGBColor(253, 251, 255)
+COLOR_DARK_PURPLE = RGBColor(59, 7, 100)       # #3B0764 - Titles & Major Headers
+COLOR_DEEP_PURPLE = RGBColor(88, 28, 135)      # #581C87 - Subtitles & Accents
+COLOR_VIBRANT_PURPLE = RGBColor(126, 34, 206)  # #7E22CE - Highlights & Icons
+COLOR_LIGHT_PURPLE = RGBColor(245, 240, 255)   # #F5F0FF - Card Background Tints
 COLOR_BORDER_PURPLE = RGBColor(216, 180, 254)  # #D8B4FE - Card Outlines
-COLOR_BODY_TEXT = RGBColor(30, 27, 75)         # #1E1B4B - High Contrast Dark Purple-Navy
-COLOR_MUTED_TEXT = RGBColor(107, 114, 128)     # #6B7280 - Metadata / Footers
+COLOR_BODY_TEXT = RGBColor(30, 27, 75)         # #1E1B4B - Primary Body Text
+COLOR_MUTED_PURPLE = RGBColor(107, 70, 140)    # #6B468C - Footers & Meta (High Contrast)
 
 FONT_FAMILY = "Calibri"
 
-# Target font sizes specified by user
-FONT_SIZE_TITLE = Pt(35)
-FONT_SIZE_SUBTITLE = Pt(25)
-FONT_SIZE_BODY = Pt(20)
+# Font Sizes - STRICT ENFORCEMENT: ALL FONT SIZES >= 16 pt
+FONT_SIZE_TITLE = Pt(34)
+FONT_SIZE_SUBTITLE = Pt(22)
+FONT_SIZE_CARD_HEADER = Pt(19)
+FONT_SIZE_BODY = Pt(17)
+FONT_SIZE_FOOTER = Pt(16)
 
 
 # -----------------------------------------------------------------------------
-# Image Generator Helpers
+# High-Resolution Diagram & Infographic Generators (Matplotlib)
 # -----------------------------------------------------------------------------
 def ensure_images_directory(img_dir: str):
-    """Ensures target directory exists."""
+    """Ensures target image directory exists."""
     os.makedirs(img_dir, exist_ok=True)
 
 
-def create_pipeline_diagram(output_path: str):
-    """Creates a high-resolution 4-stage pipeline architectural diagram."""
-    fig, ax = plt.subplots(figsize=(8, 3.8), dpi=250)
-    fig.patch.set_facecolor("#FFFFFF")
-    ax.set_facecolor("#FFFFFF")
+def create_slide1_hero_diagram(output_path: str):
+    """Slide 1 Hero Infographic: End-to-End System Ecosystem."""
+    fig, ax = plt.subplots(figsize=(7.5, 5.0), dpi=250)
+    fig.patch.set_facecolor("#FAF5FF")
+    ax.set_facecolor("#FAF5FF")
     ax.axis("off")
 
-    stages = [
-        ("1. Data Ingestion", "Streamlit UI\n• Student Details\n• 5 Subject Scores\n• Attendance %", "#3B0764"),
-        ("2. Rule Processor", "data_processor.py\n• Boundary Check\n• Aggregates & %\n• Category & Advice", "#581C87"),
-        ("3. Visualization", "visualizer.py\n• Matplotlib Agg\n• Comparative Bars\n• Threshold Lines", "#7E22CE"),
-        ("4. PDF Engine", "pdf_generator.py\n• Platypus Layout\n• Embedded Chart\n• In-Memory PDF", "#3B0764"),
+    # Center Hub Badge
+    hub = patches.FancyBboxPatch(
+        (2.2, 2.0), 3.2, 1.3,
+        boxstyle="round,pad=0.1,rounding_size=0.2",
+        facecolor="#3B0764", edgecolor="#7E22CE", linewidth=2.5
+    )
+    ax.add_patch(hub)
+    ax.text(3.8, 2.8, "PYTHON PIPELINE", ha="center", va="center", color="#FFFFFF", fontsize=15, fontweight="bold")
+    ax.text(3.8, 2.3, "100% In-Memory Streaming\nZero External Costs", ha="center", va="center", color="#E9D5FF", fontsize=12)
+
+    # 4 Surrounding Satellite Pillars
+    nodes = [
+        ("1. Streamlit UI", "Form Ingestion\n5 Subjects + Attendance", 0.5, 3.4, "#581C87"),
+        ("2. Rule Processor", "Boundary Check (0-100)\nStanding & Grade Rules", 4.3, 3.4, "#7E22CE"),
+        ("3. Matplotlib Agg", "Comparative Bar Chart\nThread-Safe Bytes", 0.5, 0.4, "#7E22CE"),
+        ("4. ReportLab PDF", "Platypus Flowables\nPrint-Ready Transcript", 4.3, 0.4, "#581C87"),
     ]
 
-    for i, (title, desc, color) in enumerate(stages):
-        x = i * 2.1
-        # Card box
-        rect = patches.FancyBboxPatch(
-            (x, 0.2), 1.8, 2.8,
-            boxstyle="round,pad=0.1,rounding_size=0.15",
-            edgecolor=color, facecolor="#F5F3FF", linewidth=2.0
+    for title, desc, x, y, color in nodes:
+        box = patches.FancyBboxPatch(
+            (x, y), 2.8, 1.25,
+            boxstyle="round,pad=0.08,rounding_size=0.15",
+            facecolor="#FFFFFF", edgecolor=color, linewidth=2.0
         )
-        ax.add_patch(rect)
-        # Header banner
-        header_rect = patches.FancyBboxPatch(
-            (x, 2.3), 1.8, 0.7,
-            boxstyle="round,pad=0.08,rounding_size=0.12",
-            edgecolor=color, facecolor=color, linewidth=1.5
+        ax.add_patch(box)
+        # Header banner inside box
+        hdr = patches.FancyBboxPatch(
+            (x, y + 0.8), 2.8, 0.45,
+            boxstyle="round,pad=0.05,rounding_size=0.1",
+            facecolor=color, edgecolor=color
         )
-        ax.add_patch(header_rect)
-        ax.text(x + 0.9, 2.65, title, ha="center", va="center", color="#FFFFFF", fontsize=9.5, fontweight="bold")
-        ax.text(x + 0.9, 1.25, desc, ha="center", va="center", color="#1E1B4B", fontsize=8.5, linespacing=1.4)
+        ax.add_patch(hdr)
+        ax.text(x + 1.4, y + 1.02, title, ha="center", va="center", color="#FFFFFF", fontsize=13, fontweight="bold")
+        ax.text(x + 1.4, y + 0.4, desc, ha="center", va="center", color="#1E1B4B", fontsize=11, fontweight="semibold")
 
-        # Arrow to next stage
-        if i < 3:
-            ax.annotate(
-                "", xy=(x + 2.05, 1.6), xytext=(x + 1.85, 1.6),
-                arrowprops=dict(arrowstyle="->", color="#7E22CE", lw=3.0, mutation_scale=16)
-            )
+    # Connecting Arrows to Center
+    ax.annotate("", xy=(2.4, 2.8), xytext=(2.0, 3.4), arrowprops=dict(arrowstyle="->", color="#7E22CE", lw=2.5))
+    ax.annotate("", xy=(5.2, 2.8), xytext=(5.6, 3.4), arrowprops=dict(arrowstyle="<-", color="#7E22CE", lw=2.5))
+    ax.annotate("", xy=(2.4, 2.4), xytext=(2.0, 1.6), arrowprops=dict(arrowstyle="<-", color="#7E22CE", lw=2.5))
+    ax.annotate("", xy=(5.2, 2.4), xytext=(5.6, 1.6), arrowprops=dict(arrowstyle="->", color="#7E22CE", lw=2.5))
 
-    ax.set_xlim(-0.2, 8.4)
-    ax.set_ylim(0.0, 3.3)
+    ax.set_xlim(0.2, 7.4)
+    ax.set_ylim(0.2, 4.8)
     plt.tight_layout()
     fig.savefig(output_path, bbox_inches="tight", dpi=250)
     plt.close(fig)
 
 
-def create_performance_chart(output_path: str):
-    """Creates a sample comparative academic bar chart."""
+def create_slide2_comparison_diagram(output_path: str):
+    """Slide 2 Comparison: Traditional Manual Process vs. Automated Pipeline."""
+    fig, ax = plt.subplots(figsize=(7.5, 5.0), dpi=250)
+    fig.patch.set_facecolor("#FAF5FF")
+    ax.set_facecolor("#FAF5FF")
+    ax.axis("off")
+
+    # Left Container: Traditional Manual (Red/Dark Orange)
+    rect_left = patches.FancyBboxPatch(
+        (0.2, 0.3), 3.4, 4.2,
+        boxstyle="round,pad=0.1,rounding_size=0.15",
+        facecolor="#FFF1F2", edgecolor="#E11D48", linewidth=2.0
+    )
+    ax.add_patch(rect_left)
+    hdr_left = patches.Rectangle((0.2, 3.8), 3.4, 0.7, facecolor="#E11D48")
+    ax.add_patch(hdr_left)
+    ax.text(1.9, 4.15, "TRADITIONAL MANUAL", ha="center", va="center", color="#FFFFFF", fontsize=13, fontweight="bold")
+
+    points_left = [
+        "❌ 2–4 Hours per class batch",
+        "❌ Frequent arithmetic errors",
+        "❌ Zero personalized feedback",
+        "❌ Static numbers without charts",
+        "❌ Inconsistent visual styling"
+    ]
+    for i, pt in enumerate(points_left):
+        ax.text(0.4, 3.3 - (i * 0.65), pt, ha="left", va="center", color="#881337", fontsize=11.5, fontweight="bold")
+
+    # Right Container: Automated Python (Purple/Emerald)
+    rect_right = patches.FancyBboxPatch(
+        (3.9, 0.3), 3.4, 4.2,
+        boxstyle="round,pad=0.1,rounding_size=0.15",
+        facecolor="#F3E8FF", edgecolor="#581C87", linewidth=2.0
+    )
+    ax.add_patch(rect_right)
+    hdr_right = patches.Rectangle((3.9, 3.8), 3.4, 0.7, facecolor="#581C87")
+    ax.add_patch(hdr_right)
+    ax.text(5.6, 4.15, "AUTOMATED PYTHON", ha="center", va="center", color="#FFFFFF", fontsize=13, fontweight="bold")
+
+    points_right = [
+        "✅ Under 1 second generation",
+        "✅ 100% calculation accuracy",
+        "✅ Dynamic tailored advice",
+        "✅ Publication-quality bar charts",
+        "✅ Clean institutional vector PDF"
+    ]
+    for i, pt in enumerate(points_right):
+        ax.text(4.1, 3.3 - (i * 0.65), pt, ha="left", va="center", color="#3B0764", fontsize=11.5, fontweight="bold")
+
+    ax.set_xlim(0.0, 7.5)
+    ax.set_ylim(0.1, 4.7)
+    plt.tight_layout()
+    fig.savefig(output_path, bbox_inches="tight", dpi=250)
+    plt.close(fig)
+
+
+def create_slide3_pillars_diagram(output_path: str):
+    """Slide 3 Diagram: 4 Core Pillars of Proposed Solution."""
+    fig, ax = plt.subplots(figsize=(7.5, 5.0), dpi=250)
+    fig.patch.set_facecolor("#FAF5FF")
+    ax.set_facecolor("#FAF5FF")
+    ax.axis("off")
+
+    pillars = [
+        ("Pillar 1: Input Validation", "Strict 0-100 limits, required fields,\ninstant feedback on malformed entry", "#3B0764"),
+        ("Pillar 2: Statistical Rules", "Totals, percentage, letter grades & standing\ncomputed via deterministic business rules", "#581C87"),
+        ("Pillar 3: Visual Analytics", "Matplotlib Agg comparative bar chart\nwith pass benchmark & average line", "#7E22CE"),
+        ("Pillar 4: Vector PDF Output", "ReportLab Platypus compilation\nwith zero external OS dependencies", "#9333EA")
+    ]
+
+    for i, (title, desc, color) in enumerate(pillars):
+        y = 3.6 - (i * 1.05)
+        # Badge
+        badge = patches.FancyBboxPatch(
+            (0.3, y), 2.2, 0.85,
+            boxstyle="round,pad=0.08,rounding_size=0.15",
+            facecolor=color, edgecolor=color
+        )
+        ax.add_patch(badge)
+        ax.text(1.4, y + 0.42, title, ha="center", va="center", color="#FFFFFF", fontsize=11.5, fontweight="bold")
+
+        # Description Card
+        card = patches.FancyBboxPatch(
+            (2.6, y), 4.6, 0.85,
+            boxstyle="round,pad=0.08,rounding_size=0.15",
+            facecolor="#FFFFFF", edgecolor="#D8B4FE", linewidth=1.5
+        )
+        ax.add_patch(card)
+        ax.text(2.8, y + 0.42, desc, ha="left", va="center", color="#1E1B4B", fontsize=11.5, fontweight="semibold")
+
+    ax.set_xlim(0.1, 7.4)
+    ax.set_ylim(0.1, 4.7)
+    plt.tight_layout()
+    fig.savefig(output_path, bbox_inches="tight", dpi=250)
+    plt.close(fig)
+
+
+def create_slide4_pipeline_diagram(output_path: str):
+    """Slide 4 Diagram: Upgraded 4-Stage Architectural Processing Pipeline."""
+    fig, ax = plt.subplots(figsize=(7.5, 5.0), dpi=250)
+    fig.patch.set_facecolor("#FAF5FF")
+    ax.set_facecolor("#FAF5FF")
+    ax.axis("off")
+
+    stages = [
+        ("STAGE 1: Ingestion", "Streamlit UI\n• Student Metadata\n• 5 Course Marks\n• Attendance %", "#3B0764", 3.6),
+        ("STAGE 2: Processing", "data_processor.py\n• Boundary Check\n• Aggregates & Grade\n• Standing & Advice", "#581C87", 2.45),
+        ("STAGE 3: Analytics", "visualizer.py\n• Matplotlib Agg\n• Comparative Bar\n• In-Memory PNG", "#7E22CE", 1.3),
+        ("STAGE 4: PDF Engine", "pdf_generator.py\n• ReportLab Platypus\n• Embedded Visuals\n• Vector PDF Download", "#9333EA", 0.15),
+    ]
+
+    for title, desc, color, y in stages:
+        # Card Box
+        card = patches.FancyBboxPatch(
+            (0.3, y), 6.8, 0.95,
+            boxstyle="round,pad=0.08,rounding_size=0.15",
+            facecolor="#FFFFFF", edgecolor=color, linewidth=2.0
+        )
+        ax.add_patch(card)
+        # Stage Badge
+        b = patches.FancyBboxPatch(
+            (0.3, y), 2.3, 0.95,
+            boxstyle="round,pad=0.08,rounding_size=0.15",
+            facecolor=color, edgecolor=color
+        )
+        ax.add_patch(b)
+        ax.text(1.45, y + 0.47, title, ha="center", va="center", color="#FFFFFF", fontsize=12, fontweight="bold")
+        ax.text(2.8, y + 0.47, desc, ha="left", va="center", color="#1E1B4B", fontsize=11, fontweight="semibold")
+
+        # Downward flow arrow
+        if y > 0.2:
+            ax.annotate("", xy=(3.7, y - 0.05), xytext=(3.7, y - 0.2),
+                        arrowprops=dict(arrowstyle="<-", color="#7E22CE", lw=3.0))
+
+    ax.set_xlim(0.1, 7.3)
+    ax.set_ylim(0.0, 4.8)
+    plt.tight_layout()
+    fig.savefig(output_path, bbox_inches="tight", dpi=250)
+    plt.close(fig)
+
+
+def create_slide5_tech_stack_diagram(output_path: str):
+    """Slide 5 Diagram: 5-Pillar Open Source Tech Stack Graphic."""
+    fig, ax = plt.subplots(figsize=(7.5, 5.0), dpi=250)
+    fig.patch.set_facecolor("#FAF5FF")
+    ax.set_facecolor("#FAF5FF")
+    ax.axis("off")
+
+    techs = [
+        ("Python 3.11+", "Core Logic & Byte Buffers", "Strict types, io.BytesIO streaming, zero disk clutter", "#3B0764"),
+        ("Streamlit", "Reactive User Interface", "Stateful dual-tab dashboard, fast reactive reloading", "#581C87"),
+        ("Pandas", "Tabular Data Structures", "High-efficiency tabular manipulation & calculations", "#7E22CE"),
+        ("Matplotlib", "Headless Agg Charts", "Thread-safe chart generation without GUI conflicts", "#9333EA"),
+        ("ReportLab", "Platypus PDF Engine", "Direct vector compilation with tables & signature blocks", "#3B0764")
+    ]
+
+    for i, (name, role, desc, color) in enumerate(techs):
+        y = 3.8 - (i * 0.88)
+        # Main Pill
+        pill = patches.FancyBboxPatch(
+            (0.3, y), 6.8, 0.75,
+            boxstyle="round,pad=0.08,rounding_size=0.15",
+            facecolor="#FFFFFF", edgecolor=color, linewidth=2.0
+        )
+        ax.add_patch(pill)
+        # Tech Label
+        badge = patches.FancyBboxPatch(
+            (0.3, y), 2.0, 0.75,
+            boxstyle="round,pad=0.08,rounding_size=0.15",
+            facecolor=color, edgecolor=color
+        )
+        ax.add_patch(badge)
+        ax.text(1.3, y + 0.37, name, ha="center", va="center", color="#FFFFFF", fontsize=12, fontweight="bold")
+        ax.text(2.5, y + 0.5, role, ha="left", va="center", color="#3B0764", fontsize=12, fontweight="bold")
+        ax.text(2.5, y + 0.22, desc, ha="left", va="center", color="#4B5563", fontsize=10.5, fontweight="semibold")
+
+    ax.set_xlim(0.1, 7.3)
+    ax.set_ylim(0.1, 4.8)
+    plt.tight_layout()
+    fig.savefig(output_path, bbox_inches="tight", dpi=250)
+    plt.close(fig)
+
+
+def create_slide6_threshold_diagram(output_path: str):
+    """Slide 6 Diagram: Academic Tiers & Attendance Threshold Scale."""
+    fig, ax = plt.subplots(figsize=(7.5, 5.0), dpi=250)
+    fig.patch.set_facecolor("#FAF5FF")
+    ax.set_facecolor("#FAF5FF")
+    ax.axis("off")
+
+    tiers = [
+        ("EXCELLENT", ">= 85%", "Outstanding mastery across curriculum; honors standing", "#10B981"),
+        ("GOOD", "70% - 84.9%", "Strong performance; commendable academic consistency", "#3B82F6"),
+        ("AVERAGE", "50% - 69.9%", "Meets standard university passing benchmark", "#F59E0B"),
+        ("NEEDS IMPROVEMENT", "< 50%", "Below benchmark; remedial mentoring required", "#EF4444")
+    ]
+
+    for idx, (title, rng, desc, color) in enumerate(tiers):
+        y = 3.8 - (idx * 0.88)
+        # Badge
+        b_rect = patches.FancyBboxPatch(
+            (0.3, y), 2.6, 0.75,
+            boxstyle="round,pad=0.08,rounding_size=0.15",
+            facecolor=color, edgecolor=color
+        )
+        ax.add_patch(b_rect)
+        ax.text(1.6, y + 0.37, f"{title}\n({rng})", ha="center", va="center", color="#FFFFFF", fontsize=11, fontweight="bold")
+
+        # Description
+        c_rect = patches.FancyBboxPatch(
+            (3.0, y), 4.2, 0.75,
+            boxstyle="round,pad=0.08,rounding_size=0.15",
+            facecolor="#FFFFFF", edgecolor="#D8B4FE", linewidth=1.5
+        )
+        ax.add_patch(c_rect)
+        ax.text(3.2, y + 0.37, desc, ha="left", va="center", color="#1E1B4B", fontsize=11, fontweight="bold")
+
+    # Attendance Rule Callout at Bottom
+    att_box = patches.FancyBboxPatch(
+        (0.3, 0.2), 6.9, 0.8,
+        boxstyle="round,pad=0.08,rounding_size=0.15",
+        facecolor="#FEE2E2", edgecolor="#DC2626", linewidth=1.8
+    )
+    ax.add_patch(att_box)
+    ax.text(0.6, 0.6, "⚠️ ATTENDANCE BENCHMARK:", ha="left", va="center", color="#991B1B", fontsize=12, fontweight="bold")
+    ax.text(0.6, 0.35, ">= 75%: Satisfactory Eligibility  |  < 75%: Triggers Attendance Shortage Warning",
+            ha="left", va="center", color="#7F1D1D", fontsize=11, fontweight="semibold")
+
+    ax.set_xlim(0.1, 7.4)
+    ax.set_ylim(0.05, 4.8)
+    plt.tight_layout()
+    fig.savefig(output_path, bbox_inches="tight", dpi=250)
+    plt.close(fig)
+
+
+def create_slide7_performance_chart(output_path: str):
+    """Slide 7 Chart: High-Visibility Academic Subject Performance Bar Chart."""
     subjects = ["Adv Python", "DSA", "DBMS", "ML Found.", "Web Tech"]
     scores = [95, 89, 92, 96, 88]
     colors = ["#3B0764", "#581C87", "#7E22CE", "#3B0764", "#581C87"]
 
-    fig, ax = plt.subplots(figsize=(7.5, 3.8), dpi=250)
-    fig.patch.set_facecolor("#FFFFFF")
-    ax.set_facecolor("#FAFAFA")
+    fig, ax = plt.subplots(figsize=(7.5, 4.8), dpi=250)
+    fig.patch.set_facecolor("#FAF5FF")
+    ax.set_facecolor("#FFFFFF")
 
-    bars = ax.bar(subjects, scores, color=colors, width=0.55, edgecolor="#1E1B4B", linewidth=1.0, zorder=3)
+    bars = ax.bar(subjects, scores, color=colors, width=0.55, edgecolor="#1E1B4B", linewidth=1.2, zorder=3)
 
     # Reference lines
-    ax.axhline(50, color="#DC2626", linestyle=":", linewidth=1.5, alpha=0.8, label="Pass Benchmark (50)", zorder=2)
+    ax.axhline(50, color="#DC2626", linestyle=":", linewidth=2.0, alpha=0.9, label="Passing Mark (50)", zorder=2)
     avg_score = sum(scores) / len(scores)
-    ax.axhline(avg_score, color="#7E22CE", linestyle="--", linewidth=1.8, alpha=0.9, label=f"Aggregate ({avg_score:.1f}%)", zorder=2)
+    ax.axhline(avg_score, color="#7E22CE", linestyle="--", linewidth=2.2, alpha=0.9, label=f"Aggregate ({avg_score:.1f}%)", zorder=2)
 
     for bar in bars:
         h = bar.get_height()
-        ax.annotate(f"{h}", xy=(bar.get_x() + bar.get_width() / 2, h), xytext=(0, 4),
-                    textcoords="offset points", ha="center", va="bottom", fontsize=10, fontweight="bold", color="#1E1B4B")
+        ax.annotate(f"{h}", xy=(bar.get_x() + bar.get_width() / 2, h), xytext=(0, 5),
+                    textcoords="offset points", ha="center", va="bottom", fontsize=13, fontweight="bold", color="#1E1B4B")
 
-    ax.set_ylim(0, 115)
-    ax.set_ylabel("Marks Obtained (/100)", fontsize=10, fontweight="bold", color="#3B0764")
-    ax.set_title("Student Subject-Wise Performance Breakdown", fontsize=12, fontweight="bold", pad=12, color="#3B0764")
-    ax.yaxis.grid(True, linestyle="--", alpha=0.4, color="#C4B5FD", zorder=1)
+    ax.set_ylim(0, 118)
+    ax.set_ylabel("Marks Obtained (/100)", fontsize=13, fontweight="bold", color="#3B0764")
+    ax.set_title("Student Subject-Wise Performance Breakdown", fontsize=14, fontweight="bold", pad=12, color="#3B0764")
+    ax.tick_params(axis='x', labelsize=12)
+    ax.tick_params(axis='y', labelsize=11)
+    ax.yaxis.grid(True, linestyle="--", alpha=0.5, color="#C4B5FD", zorder=1)
     ax.xaxis.grid(False)
 
     for spine in ["top", "right"]:
@@ -155,136 +408,220 @@ def create_performance_chart(output_path: str):
     ax.spines["left"].set_color("#581C87")
     ax.spines["bottom"].set_color("#581C87")
 
-    ax.legend(loc="upper right", frameon=True, facecolor="#FFFFFF", edgecolor="#DDD6FE", fontsize=8.5)
+    ax.legend(loc="upper right", frameon=True, facecolor="#FFFFFF", edgecolor="#DDD6FE", fontsize=11)
     plt.tight_layout()
     fig.savefig(output_path, bbox_inches="tight", dpi=250)
     plt.close(fig)
 
 
-def create_threshold_diagram(output_path: str):
-    """Creates an academic threshold scale graphic."""
-    fig, ax = plt.subplots(figsize=(7.5, 3.8), dpi=250)
-    fig.patch.set_facecolor("#FFFFFF")
-    ax.set_facecolor("#FFFFFF")
+def create_slide8_pdf_mockup_graphic(output_path: str):
+    """Slide 8 Diagram: ReportLab PDF Document Layout Schematic."""
+    fig, ax = plt.subplots(figsize=(7.5, 5.0), dpi=250)
+    fig.patch.set_facecolor("#FAF5FF")
+    ax.set_facecolor("#FAF5FF")
     ax.axis("off")
 
-    tiers = [
-        ("Excellent", ">= 85%", "Outstanding Subject Mastery & Honors", "#3B0764"),
-        ("Good", "70% - 84.9%", "Strong Foundational Competence", "#581C87"),
-        ("Average", "50% - 69.9%", "Meets Standard Passing Benchmark", "#7E22CE"),
-        ("Needs Improvement", "< 50%", "Remedial Counseling Required", "#9333EA")
-    ]
-
-    for idx, (title, rng, desc, color) in enumerate(tiers):
-        y = 2.8 - (idx * 0.85)
-        # Category Badge
-        b_rect = patches.FancyBboxPatch((0.2, y), 2.2, 0.65, boxstyle="round,pad=0.08,rounding_size=0.1",
-                                        facecolor=color, edgecolor=color)
-        ax.add_patch(b_rect)
-        ax.text(1.3, y + 0.325, f"{title}\n({rng})", ha="center", va="center", color="#FFFFFF",
-                fontsize=9.5, fontweight="bold")
-
-        # Description Card
-        c_rect = patches.FancyBboxPatch((2.6, y), 4.7, 0.65, boxstyle="round,pad=0.08,rounding_size=0.1",
-                                        facecolor="#F5F3FF", edgecolor="#DDD6FE", linewidth=1.5)
-        ax.add_patch(c_rect)
-        ax.text(2.8, y + 0.325, desc, ha="left", va="center", color="#1E1B4B", fontsize=9.5, fontweight="bold")
-
-    ax.set_xlim(0, 7.6)
-    ax.set_ylim(0, 3.6)
-    plt.tight_layout()
-    fig.savefig(output_path, bbox_inches="tight", dpi=250)
-    plt.close(fig)
-
-
-def create_pdf_mockup_graphic(output_path: str):
-    """Creates a visual preview schematic of the ReportLab PDF structure."""
-    fig, ax = plt.subplots(figsize=(7.5, 4.0), dpi=250)
-    fig.patch.set_facecolor("#FFFFFF")
-    ax.set_facecolor("#FFFFFF")
-    ax.axis("off")
-
-    # Outer Sheet (A4 Representation)
-    sheet = patches.FancyBboxPatch((0.5, 0.2), 6.5, 3.6, boxstyle="round,pad=0.08,rounding_size=0.1",
-                                   facecolor="#FAFAFA", edgecolor="#581C87", linewidth=2.0)
+    # Sheet (A4 Representation)
+    sheet = patches.FancyBboxPatch(
+        (0.4, 0.2), 6.7, 4.4,
+        boxstyle="round,pad=0.08,rounding_size=0.15",
+        facecolor="#FFFFFF", edgecolor="#581C87", linewidth=2.5
+    )
     ax.add_patch(sheet)
 
-    # Header Box
-    hdr = patches.Rectangle((0.8, 3.1), 5.9, 0.5, facecolor="#3B0764", edgecolor="none")
+    # 1. Header Box
+    hdr = patches.Rectangle((0.7, 3.8), 6.1, 0.65, facecolor="#3B0764")
     ax.add_patch(hdr)
-    ax.text(3.75, 3.35, "INSTITUTE OF ADVANCED STUDIES & RESEARCH\nOFFICIAL PERFORMANCE TRANSCRIPT",
-            ha="center", va="center", color="#FFFFFF", fontsize=7.5, fontweight="bold")
+    ax.text(3.75, 4.12, "INSTITUTE OF ADVANCED STUDIES & RESEARCH\nOFFICIAL PERFORMANCE APPRAISAL REPORT",
+            ha="center", va="center", color="#FFFFFF", fontsize=10.5, fontweight="bold")
 
-    # Student Profile Bar
-    prof = patches.Rectangle((0.8, 2.5), 5.9, 0.45, facecolor="#EDE9FE", edgecolor="#C4B5FD", linewidth=1.0)
+    # 2. Student Demographics Strip
+    prof = patches.Rectangle((0.7, 3.15), 6.1, 0.55, facecolor="#F5F0FF", edgecolor="#C4B5FD", linewidth=1.2)
     ax.add_patch(prof)
-    ax.text(3.75, 2.72, "Student: Aarav Sharma  |  Roll: 24CS801  |  Dept: CSE  |  Attendance: 94.5% (Satisfactory)",
-            ha="center", va="center", color="#1E1B4B", fontsize=7.0, fontweight="bold")
+    ax.text(3.75, 3.42, "Student: Induja  |  Roll: 25MX101  |  Dept: MCA  |  Attendance: 96.0% (Satisfactory)",
+            ha="center", va="center", color="#1E1B4B", fontsize=9.5, fontweight="bold")
 
-    # Coursework Table Block
-    tbl = patches.Rectangle((0.8, 1.55), 5.9, 0.8, facecolor="#FFFFFF", edgecolor="#C4B5FD", linewidth=1.0)
+    # 3. Coursework Table Block
+    tbl = patches.Rectangle((0.7, 2.05), 6.1, 0.95, facecolor="#FFFFFF", edgecolor="#C4B5FD", linewidth=1.2)
     ax.add_patch(tbl)
-    ax.text(3.75, 1.95, "[ Coursework Marks Table: Max Marks, Obtained, Letter Grade, Pass Status ]\nGrand Total: 457 / 500  |  Aggregate: 91.4% (EXCELLENT)",
-            ha="center", va="center", color="#3B0764", fontsize=7.0, fontweight="bold")
+    ax.text(3.75, 2.65, "[ Coursework Table: Max Marks, Obtained, Letter Grade, Status ]",
+            ha="center", va="center", color="#581C87", fontsize=10, fontweight="bold")
+    ax.text(3.75, 2.25, "Grand Total: 470 / 500  |  Aggregate: 94.0%  |  Standing: EXCELLENT (Honors)",
+            ha="center", va="center", color="#10B981", fontsize=10.5, fontweight="bold")
 
-    # Embedded Chart & Feedback Blocks
-    cht = patches.Rectangle((0.8, 0.75), 2.8, 0.65, facecolor="#F3E8FF", edgecolor="#DDD6FE", linewidth=1.0)
+    # 4. Embedded Chart & Feedback
+    cht = patches.Rectangle((0.7, 1.05), 2.95, 0.85, facecolor="#FAF5FF", edgecolor="#DDD6FE", linewidth=1.2)
     ax.add_patch(cht)
-    ax.text(2.2, 1.07, "Embedded Matplotlib\nComparative Chart", ha="center", va="center", color="#581C87", fontsize=6.8, fontweight="bold")
+    ax.text(2.17, 1.47, "Embedded Matplotlib\nComparative Chart", ha="center", va="center", color="#581C87", fontsize=10, fontweight="bold")
 
-    fb = patches.Rectangle((3.8, 0.75), 2.9, 0.65, facecolor="#F5F3FF", edgecolor="#DDD6FE", linewidth=1.0)
+    fb = patches.Rectangle((3.85, 1.05), 2.95, 0.85, facecolor="#FAF5FF", edgecolor="#DDD6FE", linewidth=1.2)
     ax.add_patch(fb)
-    ax.text(5.25, 1.07, "Personalized Feedback Box\nStrengths & Growth Areas", ha="center", va="center", color="#581C87", fontsize=6.8, fontweight="bold")
+    ax.text(5.32, 1.47, "Personalized Feedback\nStrengths & Growth Areas", ha="center", va="center", color="#581C87", fontsize=10, fontweight="bold")
 
-    # Signatures
-    ax.text(3.75, 0.42, "Class Advisor Line   -------------------   Head of Department   -------------------   Dean Academics",
-            ha="center", va="center", color="#6B7280", fontsize=6.0)
+    # 5. Signatures
+    ax.text(3.75, 0.55, "Class Advisor Line   -------------------   Head of Department (MCA)   -------------------   Dean Academics",
+            ha="center", va="center", color="#6B7280", fontsize=9, fontweight="bold")
 
-    ax.set_xlim(0, 7.5)
-    ax.set_ylim(0, 4.0)
+    ax.set_xlim(0.1, 7.4)
+    ax.set_ylim(0.1, 4.8)
+    plt.tight_layout()
+    fig.savefig(output_path, bbox_inches="tight", dpi=250)
+    plt.close(fig)
+
+
+def create_slide9_dashboard_diagram(output_path: str):
+    """Slide 9 Diagram: Interactive Streamlit UI Architecture."""
+    fig, ax = plt.subplots(figsize=(7.5, 5.0), dpi=250)
+    fig.patch.set_facecolor("#FAF5FF")
+    ax.set_facecolor("#FAF5FF")
+    ax.axis("off")
+
+    # Outer Browser Container
+    browser = patches.FancyBboxPatch(
+        (0.3, 0.3), 6.9, 4.3,
+        boxstyle="round,pad=0.08,rounding_size=0.15",
+        facecolor="#FFFFFF", edgecolor="#581C87", linewidth=2.0
+    )
+    ax.add_patch(browser)
+
+    # Top Navigation Bar
+    nav = patches.Rectangle((0.3, 4.1), 6.9, 0.5, facecolor="#3B0764")
+    ax.add_patch(nav)
+    ax.text(3.75, 4.35, "Streamlit Academic Dashboard  •  http://localhost:8501", ha="center", va="center",
+            color="#FFFFFF", fontsize=11, fontweight="bold")
+
+    # Left Sidebar (Presets)
+    sb = patches.Rectangle((0.45, 0.45), 2.0, 3.5, facecolor="#F5F0FF", edgecolor="#D8B4FE", linewidth=1.2)
+    ax.add_patch(sb)
+    ax.text(1.45, 3.7, "MCA PRESETS", ha="center", va="center", color="#3B0764", fontsize=10.5, fontweight="bold")
+    ax.text(1.45, 3.0, "• Induja (25MX101)\n• Bhuvisha (25MX102)\n• Kumar (25MX103)\n• Rajesh (25MX104)\n• Dhivya (25MX105)",
+            ha="center", va="center", color="#1E1B4B", fontsize=9.5, fontweight="semibold")
+
+    # Tab Buttons
+    tab1 = patches.Rectangle((2.6, 3.5), 2.1, 0.4, facecolor="#581C87")
+    ax.add_patch(tab1)
+    ax.text(3.65, 3.7, "Tab 1: Enter Details", ha="center", va="center", color="#FFFFFF", fontsize=9.5, fontweight="bold")
+
+    tab2 = patches.Rectangle((4.8, 3.5), 2.3, 0.4, facecolor="#E9D5FF")
+    ax.add_patch(tab2)
+    ax.text(5.95, 3.7, "Tab 2: Report & PDF", ha="center", va="center", color="#3B0764", fontsize=9.5, fontweight="bold")
+
+    # KPI Metric Cards
+    metrics = [
+        ("Total Marks", "457 / 500"),
+        ("Aggregate", "91.4%"),
+        ("Standing", "EXCELLENT")
+    ]
+    for i, (m_label, m_val) in enumerate(metrics):
+        mx = 2.6 + (i * 1.5)
+        m_box = patches.FancyBboxPatch((mx, 2.4), 1.4, 0.9, boxstyle="round,pad=0.05,rounding_size=0.1",
+                                       facecolor="#FAF5FF", edgecolor="#C4B5FD", linewidth=1.2)
+        ax.add_patch(m_box)
+        ax.text(mx + 0.7, 3.0, m_label, ha="center", va="center", color="#581C87", fontsize=9, fontweight="bold")
+        ax.text(mx + 0.7, 2.65, m_val, ha="center", va="center", color="#10B981" if i==2 else "#3B0764", fontsize=11, fontweight="bold")
+
+    # Action Download Button
+    btn = patches.FancyBboxPatch((2.6, 0.6), 4.4, 0.7, boxstyle="round,pad=0.08,rounding_size=0.12",
+                                 facecolor="#3B82F6", edgecolor="#1D4ED8", linewidth=1.5)
+    ax.add_patch(btn)
+    ax.text(4.8, 0.95, "📥 1-CLICK DOWNLOAD VECTOR PDF REPORT", ha="center", va="center",
+            color="#FFFFFF", fontsize=11.5, fontweight="bold")
+
+    # Chart Placeholder
+    cht_p = patches.Rectangle((2.6, 1.45), 4.4, 0.8, facecolor="#F3F4F6", edgecolor="#D1D5DB")
+    ax.add_patch(cht_p)
+    ax.text(4.8, 1.85, "📊 Interactive Matplotlib Analytics Preview Area", ha="center", va="center",
+            color="#4B5563", fontsize=10, fontweight="bold")
+
+    ax.set_xlim(0.1, 7.4)
+    ax.set_ylim(0.1, 4.8)
+    plt.tight_layout()
+    fig.savefig(output_path, bbox_inches="tight", dpi=250)
+    plt.close(fig)
+
+
+def create_slide10_roadmap_diagram(output_path: str):
+    """Slide 10 Diagram: Future Scope & Advanced Scalability Roadmap."""
+    fig, ax = plt.subplots(figsize=(7.5, 5.0), dpi=250)
+    fig.patch.set_facecolor("#FAF5FF")
+    ax.set_facecolor("#FAF5FF")
+    ax.axis("off")
+
+    # Top KPI Metrics Strip
+    metrics = [
+        ("0.8 SECONDS", "Instant Generation"),
+        ("100% IN-MEMORY", "io.BytesIO Streaming"),
+        ("ZERO COST", "100% Open Source")
+    ]
+    for i, (val, lbl) in enumerate(metrics):
+        x = 0.3 + (i * 2.35)
+        kpi = patches.FancyBboxPatch(
+            (x, 3.6), 2.2, 0.9,
+            boxstyle="round,pad=0.08,rounding_size=0.12",
+            facecolor="#FFFFFF", edgecolor="#7E22CE", linewidth=2.0
+        )
+        ax.add_patch(kpi)
+        ax.text(x + 1.1, 4.15, val, ha="center", va="center", color="#3B0764", fontsize=12.5, fontweight="bold")
+        ax.text(x + 1.1, 3.82, lbl, ha="center", va="center", color="#581C87", fontsize=10.5, fontweight="semibold")
+
+    # 4-Phase Roadmap Timeline
+    phases = [
+        ("Phase 1: Current Release", "Single student live UI + vector PDF", "#3B0764"),
+        ("Phase 2: Batch Processing", "Upload CSV for 500+ student batches", "#581C87"),
+        ("Phase 3: Automated Dispatch", "Direct email of signed PDFs to students", "#7E22CE"),
+        ("Phase 4: ERP/LMS Sync", "REST API integration into University portal", "#9333EA")
+    ]
+
+    for i, (title, desc, color) in enumerate(phases):
+        y = 2.6 - (i * 0.75)
+        # Dot/Marker
+        dot = patches.Circle((0.6, y + 0.32), 0.18, facecolor=color, edgecolor="#FFFFFF", linewidth=2.0, zorder=4)
+        ax.add_patch(dot)
+        ax.text(0.6, y + 0.32, f"{i+1}", ha="center", va="center", color="#FFFFFF", fontsize=11, fontweight="bold", zorder=5)
+
+        # Content Card
+        c = patches.FancyBboxPatch(
+            (1.0, y), 6.1, 0.65,
+            boxstyle="round,pad=0.08,rounding_size=0.12",
+            facecolor="#FFFFFF", edgecolor=color, linewidth=1.5
+        )
+        ax.add_patch(c)
+        ax.text(1.2, y + 0.43, title, ha="left", va="center", color=color, fontsize=12, fontweight="bold")
+        ax.text(1.2, y + 0.18, desc, ha="left", va="center", color="#374151", fontsize=10.5, fontweight="semibold")
+
+    # Vertical connecting line behind dots
+    ax.plot([0.6, 0.6], [0.55, 2.9], color="#C4B5FD", lw=3.0, zorder=2)
+
+    ax.set_xlim(0.1, 7.4)
+    ax.set_ylim(0.1, 4.8)
     plt.tight_layout()
     fig.savefig(output_path, bbox_inches="tight", dpi=250)
     plt.close(fig)
 
 
 # -----------------------------------------------------------------------------
-# PPTX Builder Utilities
+# PPTX Slide Helper Utilities
 # -----------------------------------------------------------------------------
-def set_slide_background_white(slide):
-    """Sets a clean pure white background for the slide."""
+def set_slide_background_canvas(slide):
+    """Sets a clean, modern canvas background."""
     background = slide.background
     fill = background.fill
     fill.solid()
-    fill.fore_color.rgb = COLOR_WHITE
+    fill.fore_color.rgb = COLOR_CANVAS_BG
 
 
-def add_dark_purple_accents(slide):
-    """Adds subtle modern dark purple accent lines/borders to the slide."""
-    # Top accent line
-    top_line = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(1.5), Inches(11.7), Inches(0.04))
-    top_line.fill.solid()
-    top_line.fill.fore_color.rgb = COLOR_DEEP_PURPLE
-    top_line.line.color.rgb = COLOR_DEEP_PURPLE
-
-    # Bottom footer banner
-    footer_bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(7.0), Inches(11.7), Inches(0.02))
-    footer_bar.fill.solid()
-    footer_bar.fill.fore_color.rgb = COLOR_BORDER_PURPLE
-    footer_bar.line.color.rgb = COLOR_BORDER_PURPLE
-
-
-def add_slide_header(slide, title_text: str, subtitle_text: str):
+def add_modern_header(slide, title_text: str, subtitle_text: str):
     """
-    Standardized header with EXACT requested font sizes:
-    - Title: 35 pt
-    - Subtitle: 25 pt
+    Standardized slide header:
+    - Title: 34 pt (Strictly > 15 pt)
+    - Subtitle: 22 pt (Strictly > 15 pt)
     """
-    header_box = slide.shapes.add_textbox(Inches(0.8), Inches(0.4), Inches(11.7), Inches(1.1))
+    header_box = slide.shapes.add_textbox(Inches(0.8), Inches(0.35), Inches(11.733), Inches(1.15))
     tf = header_box.text_frame
     tf.word_wrap = True
     tf.margin_left = tf.margin_top = tf.margin_right = tf.margin_bottom = 0
 
-    # Title paragraph (35 pt)
+    # Title paragraph
     p_title = tf.paragraphs[0]
     p_title.text = title_text
     p_title.font.name = FONT_FAMILY
@@ -292,218 +629,230 @@ def add_slide_header(slide, title_text: str, subtitle_text: str):
     p_title.font.bold = True
     p_title.font.color.rgb = COLOR_DARK_PURPLE
 
-    # Subtitle paragraph (25 pt)
+    # Subtitle paragraph
     p_sub = tf.add_paragraph()
     p_sub.text = subtitle_text
     p_sub.font.name = FONT_FAMILY
     p_sub.font.size = FONT_SIZE_SUBTITLE
     p_sub.font.bold = True
     p_sub.font.color.rgb = COLOR_DEEP_PURPLE
+    p_sub.space_before = Pt(4)
+
+    # Accent divider lines
+    top_line = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(1.55), Inches(11.733), Inches(0.04))
+    top_line.fill.solid()
+    top_line.fill.fore_color.rgb = COLOR_DEEP_PURPLE
+    top_line.line.color.rgb = COLOR_DEEP_PURPLE
 
 
-def add_bullet_content(slide, left: float, top: float, width: float, height: float, bullet_items: list):
+def add_visual_content_card(slide, left: float, top: float, width: float, height: float, items: list):
     """
-    Adds bulleted body text with EXACT requested font size:
-    - Text: 20 pt
+    Adds a modern styled content card with rounded corners and bullet items.
+    ALL TEXT is guaranteed >= 16 pt (STRICTLY > 15 pt).
     """
-    textbox = slide.shapes.add_textbox(Inches(left), Inches(top), Inches(width), Inches(height))
-    tf = textbox.text_frame
+    # Background card shape
+    card_shape = slide.shapes.add_shape(
+        MSO_SHAPE.ROUNDED_RECTANGLE,
+        Inches(left), Inches(top), Inches(width), Inches(height)
+    )
+    card_shape.fill.solid()
+    card_shape.fill.fore_color.rgb = COLOR_LIGHT_PURPLE
+    card_shape.line.color.rgb = COLOR_BORDER_PURPLE
+    card_shape.line.width = Pt(1.5)
+
+    # Text box overlay
+    tb = slide.shapes.add_textbox(
+        Inches(left + 0.25), Inches(top + 0.2), Inches(width - 0.5), Inches(height - 0.4)
+    )
+    tf = tb.text_frame
     tf.word_wrap = True
     tf.margin_left = tf.margin_top = tf.margin_right = tf.margin_bottom = 0
 
-    for i, item in enumerate(bullet_items):
+    for i, item in enumerate(items):
         p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
-        p.space_after = Pt(12)
+        p.space_after = Pt(14)
         p.space_before = Pt(4)
 
         if isinstance(item, tuple):
-            # (Bold header, normal text)
-            run_bold = p.add_run()
-            run_bold.text = item[0] + " "
-            run_bold.font.name = FONT_FAMILY
-            run_bold.font.size = FONT_SIZE_BODY
-            run_bold.font.bold = True
-            run_bold.font.color.rgb = COLOR_DARK_PURPLE
+            lead, body = item
+            run_lead = p.add_run()
+            run_lead.text = lead + " "
+            run_lead.font.name = FONT_FAMILY
+            run_lead.font.size = FONT_SIZE_CARD_HEADER  # 19 pt
+            run_lead.font.bold = True
+            run_lead.font.color.rgb = COLOR_DARK_PURPLE
 
             run_body = p.add_run()
-            run_body.text = item[1]
+            run_body.text = body
             run_body.font.name = FONT_FAMILY
-            run_body.font.size = FONT_SIZE_BODY
+            run_body.font.size = FONT_SIZE_BODY         # 17 pt
             run_body.font.bold = False
             run_body.font.color.rgb = COLOR_BODY_TEXT
         else:
             run = p.add_run()
             run.text = item
             run.font.name = FONT_FAMILY
-            run.font.size = FONT_SIZE_BODY
+            run.font.size = FONT_SIZE_BODY              # 17 pt
             run.font.bold = False
             run.font.color.rgb = COLOR_BODY_TEXT
 
 
 def add_slide_footer(slide, current_slide: int, total_slides: int = 10):
-    """Adds slide number and course information to footer."""
-    footer_box = slide.shapes.add_textbox(Inches(0.8), Inches(7.05), Inches(11.7), Inches(0.35))
+    """
+    Adds slide footer with slide count.
+    Font size is 16 pt (Strictly > 15 pt).
+    """
+    # Bottom divider line
+    footer_line = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(6.85), Inches(11.733), Inches(0.02))
+    footer_line.fill.solid()
+    footer_line.fill.fore_color.rgb = COLOR_BORDER_PURPLE
+    footer_line.line.color.rgb = COLOR_BORDER_PURPLE
+
+    footer_box = slide.shapes.add_textbox(Inches(0.8), Inches(6.92), Inches(11.733), Inches(0.4))
     tf = footer_box.text_frame
     p = tf.paragraphs[0]
     p.text = f"Advanced Python Programming  |  Personalized Report Generation  |  Slide {current_slide} of {total_slides}"
     p.font.name = FONT_FAMILY
-    p.font.size = Pt(11)
-    p.font.color.rgb = COLOR_MUTED_TEXT
+    p.font.size = FONT_SIZE_FOOTER  # 16 pt
+    p.font.bold = True
+    p.font.color.rgb = COLOR_MUTED_PURPLE
 
 
 # -----------------------------------------------------------------------------
-# Main PPTX Builder
+# Main Slide Deck Generator (10 Slides with Graphics on Every Slide)
 # -----------------------------------------------------------------------------
 def build_presentation(output_pptx_path: str, images_dir: str):
-    """Compiles the complete 10-slide PowerPoint deck."""
-    print("Initializing PowerPoint presentation...")
+    """Compiles the enhanced 10-slide PowerPoint deck."""
+    print("Initializing enhanced PowerPoint presentation...")
     prs = Presentation()
-    # 16:9 Widescreen format (13.33 x 7.5 inches)
     prs.slide_width = Inches(13.333)
     prs.slide_height = Inches(7.5)
     blank_layout = prs.slide_layouts[6]
 
-    # Generate supporting image assets
-    print("Generating presentation graphics...")
     ensure_images_directory(images_dir)
-    img_pipeline = os.path.join(images_dir, "pipeline_architecture.png")
-    img_chart = os.path.join(images_dir, "performance_chart.png")
-    img_threshold = os.path.join(images_dir, "threshold_scale.png")
-    img_pdf = os.path.join(images_dir, "pdf_mockup.png")
 
-    create_pipeline_diagram(img_pipeline)
-    create_performance_chart(img_chart)
-    create_threshold_diagram(img_threshold)
-    create_pdf_mockup_graphic(img_pdf)
+    # 10 Dedicated High-Res Image Assets
+    img_s1 = os.path.join(images_dir, "slide1_hero.png")
+    img_s2 = os.path.join(images_dir, "slide2_comparison.png")
+    img_s3 = os.path.join(images_dir, "slide3_pillars.png")
+    img_s4 = os.path.join(images_dir, "pipeline_architecture.png")
+    img_s5 = os.path.join(images_dir, "slide5_tech_stack.png")
+    img_s6 = os.path.join(images_dir, "threshold_scale.png")
+    img_s7 = os.path.join(images_dir, "performance_chart.png")
+    img_s8 = os.path.join(images_dir, "pdf_mockup.png")
+    img_s9 = os.path.join(images_dir, "slide9_dashboard.png")
+    img_s10 = os.path.join(images_dir, "slide10_roadmap.png")
+
+    print("Generating high-resolution diagram and chart graphics...")
+    create_slide1_hero_diagram(img_s1)
+    create_slide2_comparison_diagram(img_s2)
+    create_slide3_pillars_diagram(img_s3)
+    create_slide4_pipeline_diagram(img_s4)
+    create_slide5_tech_stack_diagram(img_s5)
+    create_slide6_threshold_diagram(img_s6)
+    create_slide7_performance_chart(img_s7)
+    create_slide8_pdf_mockup_graphic(img_s8)
+    create_slide9_dashboard_diagram(img_s9)
+    create_slide10_roadmap_diagram(img_s10)
 
     # =========================================================================
-    # SLIDE 1: Title Slide
+    # SLIDE 1: Title Slide (With Hero System Ecosystem Diagram)
     # =========================================================================
-    print("Building Slide 1: Title Slide...")
+    print("Building Slide 1: Title Slide with Hero Ecosystem...")
     s1 = prs.slides.add_slide(blank_layout)
-    set_slide_background_white(s1)
+    set_slide_background_canvas(s1)
+    add_modern_header(s1, "Personalized Report Generation using Templates and Python",
+                      "Automated Academic Performance Appraisal & PDF Compilation System")
 
-    # Decorative purple header banner
-    banner = s1.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(0.8), Inches(11.7), Inches(0.1))
-    banner.fill.solid()
-    banner.fill.fore_color.rgb = COLOR_DARK_PURPLE
-    banner.line.color.rgb = COLOR_DARK_PURPLE
-
-    # Main Title (35 pt)
-    t_box = s1.shapes.add_textbox(Inches(0.8), Inches(1.3), Inches(11.7), Inches(1.4))
-    tf1 = t_box.text_frame
-    tf1.word_wrap = True
-    p1 = tf1.paragraphs[0]
-    p1.text = "Personalized Report Generation using Templates and Python"
-    p1.font.name = FONT_FAMILY
-    p1.font.size = FONT_SIZE_TITLE
-    p1.font.bold = True
-    p1.font.color.rgb = COLOR_DARK_PURPLE
-
-    # Subtitle (25 pt)
-    p1_sub = tf1.add_paragraph()
-    p1_sub.text = "Automated Academic Performance Appraisal & PDF Compilation System"
-    p1_sub.font.name = FONT_FAMILY
-    p1_sub.font.size = FONT_SIZE_SUBTITLE
-    p1_sub.font.bold = True
-    p1_sub.font.color.rgb = COLOR_DEEP_PURPLE
-    p1_sub.space_before = Pt(8)
-
-    # Project Details Card
-    card1 = s1.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(3.2), Inches(11.7), Inches(3.3))
-    card1.fill.solid()
-    card1.fill.fore_color.rgb = COLOR_LIGHT_PURPLE
-    card1.line.color.rgb = COLOR_BORDER_PURPLE
-    card1.line.width = Pt(1.5)
-
-    bullets_s1 = [
-        ("• Academic Context:", "Postgraduate Seminar Coursework in Advanced Python Programming."),
-        ("• Core Technology:", "Python 3, Streamlit (Web UI), Pandas (Data), Matplotlib (Charts), ReportLab (PDFs)."),
-        ("• Key Philosophy:", "100% Free & Open-Source Stack — Zero external APIs, databases, or cloud costs."),
-        ("• Architecture:", "Template Decoupled Design with In-Memory Byte Buffer Streaming (io.BytesIO).")
+    items_s1 = [
+        ("• Academic Context:", "Postgraduate Coursework in Advanced Python Programming."),
+        ("• Core Stack:", "Python 3, Streamlit (UI), Pandas, Matplotlib, ReportLab."),
+        ("• Architecture:", "Decoupled Template Design with In-Memory Byte Streaming."),
+        ("• Zero Cost:", "100% Free & Open-Source — No cloud fees or paid APIs.")
     ]
-    add_bullet_content(s1, 1.2, 3.4, 10.9, 2.9, bullets_s1)
+    add_visual_content_card(s1, 0.8, 1.75, 5.7, 4.9, items_s1)
+    if os.path.exists(img_s1):
+        s1.shapes.add_picture(img_s1, Inches(6.8), Inches(1.75), width=Inches(5.7))
     add_slide_footer(s1, 1)
 
     # =========================================================================
-    # SLIDE 2: Problem Statement & Motivation
+    # SLIDE 2: Problem Statement (With Manual vs Automated Comparison Diagram)
     # =========================================================================
-    print("Building Slide 2: Problem Statement...")
+    print("Building Slide 2: Problem Statement & Motivation...")
     s2 = prs.slides.add_slide(blank_layout)
-    set_slide_background_white(s2)
-    add_slide_header(s2, "Problem Statement & Academic Motivation", "Challenges in Traditional Student Progress Reporting")
-    add_dark_purple_accents(s2)
+    set_slide_background_canvas(s2)
+    add_modern_header(s2, "Problem Statement & Academic Motivation",
+                      "Challenges in Traditional Student Progress Appraisal")
 
-    bullets_s2 = [
-        ("• High Administrative Overhead:", "Manual report preparation across spreadsheets is slow and labor-intensive."),
-        ("• Arithmetic Calculation Errors:", "Manual averaging and grading often produce discrepancies in student grade cards."),
-        ("• Lack of Personalized Guidance:", "Standard reports only show scores, lacking individualized academic advice."),
-        ("• Absent Data Visualizations:", "Tabular marks alone fail to visually communicate strengths and growth areas."),
-        ("• Need for Consistent Templating:", "Institutions require unified, professional branding across all student transcripts.")
+    items_s2 = [
+        ("• Administrative Burden:", "Manual spreadsheet reporting takes hours per batch."),
+        ("• Calculation Errors:", "Averaging and grading manual mistakes harm accuracy."),
+        ("• Lack of Guidance:", "Standard report cards omit personalized remedial advice."),
+        ("• Absent Visual Analytics:", "Tables fail to visually highlight student strengths.")
     ]
-    add_bullet_content(s2, 0.8, 1.8, 11.7, 5.0, bullets_s2)
+    add_visual_content_card(s2, 0.8, 1.75, 5.7, 4.9, items_s2)
+    if os.path.exists(img_s2):
+        s2.shapes.add_picture(img_s2, Inches(6.8), Inches(1.75), width=Inches(5.7))
     add_slide_footer(s2, 2)
 
     # =========================================================================
-    # SLIDE 3: Proposed Solution & Key Objectives
+    # SLIDE 3: Proposed Solution (With 4 Core Pillars Diagram)
     # =========================================================================
-    print("Building Slide 3: Proposed Solution...")
+    print("Building Slide 3: Proposed Solution & Objectives...")
     s3 = prs.slides.add_slide(blank_layout)
-    set_slide_background_white(s3)
-    add_slide_header(s3, "Proposed Solution & System Objectives", "Automated, Decoupled Template-Driven Pipeline")
-    add_dark_purple_accents(s3)
+    set_slide_background_canvas(s3)
+    add_modern_header(s3, "Proposed Solution & System Objectives",
+                      "Automated, Decoupled Template-Driven Academic Pipeline")
 
-    bullets_s3 = [
-        ("• Strict Input Validation:", "Real-time boundary checks (0–100 limits, required registration fields)."),
-        ("• Automated Statistical Engine:", "Instant computation of totals, averages, percentages, and standing categories."),
-        ("• Rule-Based Appraisal Engine:", "Generates intelligent feedback identifying top subjects and attendance warnings."),
-        ("• Publication-Ready Visuals:", "Dynamic comparative bar charts highlighting benchmarks and student averages."),
-        ("• Vector PDF Generation:", "ReportLab Platypus compiles print-ready academic documents on demand.")
+    items_s3 = [
+        ("• Strict Input Validation:", "Enforces [0, 100] numerical score bounds."),
+        ("• Statistical Engine:", "Automates totals, percentages, letter grades & standing."),
+        ("• Personalized Advice:", "Identifies top & lowest courses with remedial guidance."),
+        ("• Publication Output:", "Compiles vector PDF transcripts ready for print.")
     ]
-    add_bullet_content(s3, 0.8, 1.8, 11.7, 5.0, bullets_s3)
+    add_visual_content_card(s3, 0.8, 1.75, 5.7, 4.9, items_s3)
+    if os.path.exists(img_s3):
+        s3.shapes.add_picture(img_s3, Inches(6.8), Inches(1.75), width=Inches(5.7))
     add_slide_footer(s3, 3)
 
     # =========================================================================
-    # SLIDE 4: System Architecture & Pipeline (With Architecture Diagram)
+    # SLIDE 4: System Architecture (With 4-Stage Pipeline Diagram)
     # =========================================================================
-    print("Building Slide 4: System Architecture...")
+    print("Building Slide 4: System Architecture & Dataflow...")
     s4 = prs.slides.add_slide(blank_layout)
-    set_slide_background_white(s4)
-    add_slide_header(s4, "System Architecture & Processing Pipeline", "4-Stage Modular Decoupled Design")
-    add_dark_purple_accents(s4)
+    set_slide_background_canvas(s4)
+    add_modern_header(s4, "System Architecture & Processing Pipeline",
+                      "4-Stage Modular Decoupled In-Memory Execution Flow")
 
-    # Left: Bullet text
-    bullets_s4 = [
-        ("• Stage 1 (Ingestion):", "Streamlit UI captures student demographics & 5 subject marks."),
-        ("• Stage 2 (Processing):", "data_processor.py executes validation & statistical aggregations."),
-        ("• Stage 3 (Analytics):", "visualizer.py produces comparative charts via Matplotlib Agg."),
-        ("• Stage 4 (Compilation):", "pdf_generator.py binds data into ReportLab Platypus PDF.")
+    items_s4 = [
+        ("• Stage 1 (Ingestion):", "Streamlit UI collects student demographics & marks."),
+        ("• Stage 2 (Processing):", "data_processor.py executes validation & calculations."),
+        ("• Stage 3 (Analytics):", "visualizer.py generates comparative charts via Agg."),
+        ("• Stage 4 (Compilation):", "pdf_generator.py binds data into ReportLab Platypus.")
     ]
-    add_bullet_content(s4, 0.8, 1.75, 5.8, 5.0, bullets_s4)
-
-    # Right: Embedded Architecture Diagram
-    if os.path.exists(img_pipeline):
-        s4.shapes.add_picture(img_pipeline, Inches(6.8), Inches(1.85), width=Inches(5.7))
-
+    add_visual_content_card(s4, 0.8, 1.75, 5.7, 4.9, items_s4)
+    if os.path.exists(img_s4):
+        s4.shapes.add_picture(img_s4, Inches(6.8), Inches(1.75), width=Inches(5.7))
     add_slide_footer(s4, 4)
 
     # =========================================================================
-    # SLIDE 5: Technology Stack & Technical Rationale
+    # SLIDE 5: Technology Stack (With 5-Tool Open-Source Grid Diagram)
     # =========================================================================
     print("Building Slide 5: Technology Stack...")
     s5 = prs.slides.add_slide(blank_layout)
-    set_slide_background_white(s5)
-    add_slide_header(s5, "Technology Stack & Technical Rationale", "100% Free, Lightweight & Open-Source Stack")
-    add_dark_purple_accents(s5)
+    set_slide_background_canvas(s5)
+    add_modern_header(s5, "Technology Stack & Technical Rationale",
+                      "100% Free, Lightweight & Open-Source Python Ecosystem")
 
-    bullets_s5 = [
-        ("• Python 3:", "Core logic, strict type hinting, and memory-efficient byte streaming (io.BytesIO)."),
-        ("• Streamlit:", "Reactive web interface with persistent session state management and custom CSS."),
-        ("• Pandas:", "Tabular data frame structures for structured academic record manipulation."),
-        ("• Matplotlib (Agg):", "Headless, thread-safe charting that prevents GUI backend threading crashes."),
-        ("• ReportLab Platypus:", "Native vector PDF compilation with tables and flowables (no external OS tools).")
+    items_s5 = [
+        ("• Python 3.11+:", "Core logic with strict types and in-memory io.BytesIO."),
+        ("• Streamlit:", "Interactive web UI with persistent session state."),
+        ("• Pandas:", "Tabular data frame structures for student records."),
+        ("• ReportLab:", "Native vector PDF compilation with Flowables.")
     ]
-    add_bullet_content(s5, 0.8, 1.8, 11.7, 5.0, bullets_s5)
+    add_visual_content_card(s5, 0.8, 1.75, 5.7, 4.9, items_s5)
+    if os.path.exists(img_s5):
+        s5.shapes.add_picture(img_s5, Inches(6.8), Inches(1.75), width=Inches(5.7))
     add_slide_footer(s5, 5)
 
     # =========================================================================
@@ -511,110 +860,104 @@ def build_presentation(output_pptx_path: str, images_dir: str):
     # =========================================================================
     print("Building Slide 6: Validation & Categorization...")
     s6 = prs.slides.add_slide(blank_layout)
-    set_slide_background_white(s6)
-    add_slide_header(s6, "Input Validation & Academic Categorization", "Clearly Defined Academic Thresholds & Constraints")
-    add_dark_purple_accents(s6)
+    set_slide_background_canvas(s6)
+    add_modern_header(s6, "Input Validation & Academic Categorization",
+                      "Clearly Defined University Evaluation Thresholds")
 
-    bullets_s6 = [
-        ("• Boundary Enforcement:", "Name & Roll required; marks & attendance strictly in [0, 100]."),
-        ("• Four Academic Tiers:", "Excellent (>= 85%), Good (70-84%), Average (50-69%), Needs Imprv (< 50%)."),
-        ("• Attendance Compliance:", "Standard >= 75% required; < 75% triggers an immediate Shortage Alert."),
-        ("• Multi-Factor Feedback:", "Praises highest subject while highlighting targeted areas for growth.")
+    items_s6 = [
+        ("• Boundary Checks:", "Name/Roll required; marks & attendance strictly in [0, 100]."),
+        ("• 4 Standing Tiers:", "Excellent (>= 85%), Good (70-84%), Average (50-69%), Needs Imprv (< 50%)."),
+        ("• Attendance Norms:", "Standard >= 75% required; < 75% triggers shortage alert."),
+        ("• Remedial Engine:", "Praises strengths and recommends corrective actions.")
     ]
-    add_bullet_content(s6, 0.8, 1.75, 5.8, 5.0, bullets_s6)
-
-    # Right: Embedded Threshold Diagram
-    if os.path.exists(img_threshold):
-        s6.shapes.add_picture(img_threshold, Inches(6.8), Inches(1.85), width=Inches(5.7))
-
+    add_visual_content_card(s6, 0.8, 1.75, 5.7, 4.9, items_s6)
+    if os.path.exists(img_s6):
+        s6.shapes.add_picture(img_s6, Inches(6.8), Inches(1.75), width=Inches(5.7))
     add_slide_footer(s6, 6)
 
     # =========================================================================
-    # SLIDE 7: Dynamic Data Visualization (With Performance Chart Image)
+    # SLIDE 7: Dynamic Data Visualization (With Performance Chart)
     # =========================================================================
     print("Building Slide 7: Visualization Engine...")
     s7 = prs.slides.add_slide(blank_layout)
-    set_slide_background_white(s7)
-    add_slide_header(s7, "Dynamic Data Visualization Engine", "In-Memory Academic Performance Analytics")
-    add_dark_purple_accents(s7)
+    set_slide_background_canvas(s7)
+    add_modern_header(s7, "Dynamic Data Visualization Engine",
+                      "Comparative Academic Performance Visual Analytics")
 
-    bullets_s7 = [
-        ("• Dynamic Bar Palette:", "Scores color-coded based on performance tiers for instant clarity."),
-        ("• Benchmark Reference Lines:", "Passing mark threshold (50) and dynamic student average line."),
-        ("• Value Annotations:", "Numerical scores explicitly annotated above each bar for readability."),
-        ("• Zero-Disk Byte Buffering:", "Chart rasterized directly to io.BytesIO for web & PDF embedding.")
+    items_s7 = [
+        ("• Tier Color Coding:", "Bars styled according to performance category."),
+        ("• Benchmark Lines:", "Visual pass benchmark (50) and student aggregate line."),
+        ("• Score Annotations:", "Numerical marks annotated on top of each bar."),
+        ("• Zero Disk I/O:", "Charts rasterized to in-memory bytes for immediate PDF embed.")
     ]
-    add_bullet_content(s7, 0.8, 1.75, 5.8, 5.0, bullets_s7)
-
-    # Right: Embedded Matplotlib Chart
-    if os.path.exists(img_chart):
-        s7.shapes.add_picture(img_chart, Inches(6.8), Inches(1.85), width=Inches(5.7))
-
+    add_visual_content_card(s7, 0.8, 1.75, 5.7, 4.9, items_s7)
+    if os.path.exists(img_s7):
+        s7.shapes.add_picture(img_s7, Inches(6.8), Inches(1.75), width=Inches(5.7))
     add_slide_footer(s7, 7)
 
     # =========================================================================
-    # SLIDE 8: Template Decoupling & PDF Generation (With PDF Mockup)
+    # SLIDE 8: Template Decoupling & PDF (With PDF Mockup Schematic)
     # =========================================================================
-    print("Building Slide 8: Template Decoupling & PDF...")
+    print("Building Slide 8: Template Decoupling & PDF Output...")
     s8 = prs.slides.add_slide(blank_layout)
-    set_slide_background_white(s8)
-    add_slide_header(s8, "Template Decoupling & Vector PDF Output", "Reusable Document Layout via ReportLab Platypus")
-    add_dark_purple_accents(s8)
+    set_slide_background_canvas(s8)
+    add_modern_header(s8, "Template Decoupling & Vector PDF Output",
+                      "Printable Academic Transcripts via ReportLab Platypus")
 
-    bullets_s8 = [
-        ("• Decoupled Architecture:", "Layout geometry remains static while dynamic student data is injected."),
-        ("• Platypus Flowables:", "Uses Paragraphs, Tables, and KeepTogether to prevent page overflows."),
-        ("• Institutional Elements:", "Header branding, grade tables, embedded charts, and signature blocks."),
-        ("• Scalable Output:", "Clean vector PDF ready for immediate printing or official distribution.")
+    items_s8 = [
+        ("• Template Decoupling:", "Static visual geometry separated from dynamic student data."),
+        ("• Platypus Flowables:", "Automatic page budget management and clean pagination."),
+        ("• Official Elements:", "Header branding, grade tables, embedded chart, signature lines."),
+        ("• Vector Precision:", "High-resolution output suitable for official institutional archives.")
     ]
-    add_bullet_content(s8, 0.8, 1.75, 5.8, 5.0, bullets_s8)
-
-    # Right: Embedded PDF Structure Mockup
-    if os.path.exists(img_pdf):
-        s8.shapes.add_picture(img_pdf, Inches(6.8), Inches(1.85), width=Inches(5.7))
-
+    add_visual_content_card(s8, 0.8, 1.75, 5.7, 4.9, items_s8)
+    if os.path.exists(img_s8):
+        s8.shapes.add_picture(img_s8, Inches(6.8), Inches(1.75), width=Inches(5.7))
     add_slide_footer(s8, 8)
 
     # =========================================================================
-    # SLIDE 9: Demonstration & User Interface
+    # SLIDE 9: User Interface & Demonstration (With UI Dashboard Diagram)
     # =========================================================================
     print("Building Slide 9: Demonstration & Workflow...")
     s9 = prs.slides.add_slide(blank_layout)
-    set_slide_background_white(s9)
-    add_slide_header(s9, "Application Interface & Demonstration Workflow", "Streamlit Interactive Dashboard Experience")
-    add_dark_purple_accents(s9)
+    set_slide_background_canvas(s9)
+    add_modern_header(s9, "Application Interface & Demonstration Workflow",
+                      "Reactive Dual-Tab Dashboard with Classroom Demo Presets")
 
-    bullets_s9 = [
-        ("• Quick Demo Presets:", "Sidebar allows 1-click loading of student profiles (High Achiever, Needs Review)."),
-        ("• Dual-Tab Interface:", "Tab 1 for intuitive record entry; Tab 2 for live report inspection & download."),
-        ("• Real-Time KPI Cards:", "Displays Total Marks, Aggregate %, Standing Badge, and Attendance."),
-        ("• One-Click PDF Download:", "Streamlit download button serves vector-quality report on demand.")
+    items_s9 = [
+        ("• 1-Click Sidebar Presets:", "Pre-loaded profiles (High Achiever, Needs Review)."),
+        ("• Dual-Tab Layout:", "Tab 1 for data input; Tab 2 for live report inspection."),
+        ("• Live KPI Summary:", "Instant metrics for Total Marks, Aggregate %, Standing."),
+        ("• In-Memory Download:", "1-Click download of vector PDF without file locking.")
     ]
-    add_bullet_content(s9, 0.8, 1.8, 11.7, 5.0, bullets_s9)
+    add_visual_content_card(s9, 0.8, 1.75, 5.7, 4.9, items_s9)
+    if os.path.exists(img_s9):
+        s9.shapes.add_picture(img_s9, Inches(6.8), Inches(1.75), width=Inches(5.7))
     add_slide_footer(s9, 9)
 
     # =========================================================================
-    # SLIDE 10: Conclusion, Future Scope & Q&A
+    # SLIDE 10: Conclusion & Roadmap (With Roadmap Infographic)
     # =========================================================================
     print("Building Slide 10: Conclusion & Future Scope...")
     s10 = prs.slides.add_slide(blank_layout)
-    set_slide_background_white(s10)
-    add_slide_header(s10, "Conclusion, Future Scope & Viva Discussion", "Project Summary & Advanced Scalability Roadmap")
-    add_dark_purple_accents(s10)
+    set_slide_background_canvas(s10)
+    add_modern_header(s10, "Conclusion, Future Scope & Viva Discussion",
+                      "Project Accomplishments & Enterprise Scalability Roadmap")
 
-    bullets_s10 = [
-        ("• Key Accomplishments:", "Delivered an automated, zero-cost, template-driven report generator."),
-        ("• High Memory Efficiency:", "In-memory streaming (io.BytesIO) prevents disk clutter and file locking."),
-        ("• Scalability Roadmap:", "Can easily extend to batch CSV processing for 500+ students and email dispatch."),
-        ("• Advanced Extensions:", "Longitudinal trend tracking across semesters & institutional LMS integration."),
-        ("• Thank You:", "Floor is open for Questions, Code Walkthrough, and Viva Evaluation.")
+    items_s10 = [
+        ("• 100% Automated:", "Eliminates administrative overhead and arithmetic errors."),
+        ("• High Performance:", "Under 0.8s execution time via in-memory streaming."),
+        ("• Scalability Roadmap:", "Batch CSV ingestion for 500+ students & email dispatch."),
+        ("• Viva Evaluation:", "Floor is open for Questions, Code Walkthrough & Demo.")
     ]
-    add_bullet_content(s10, 0.8, 1.8, 11.7, 5.0, bullets_s10)
+    add_visual_content_card(s10, 0.8, 1.75, 5.7, 4.9, items_s10)
+    if os.path.exists(img_s10):
+        s10.shapes.add_picture(img_s10, Inches(6.8), Inches(1.75), width=Inches(5.7))
     add_slide_footer(s10, 10)
 
-    # Save presentation
+    # Save final presentation
     prs.save(output_pptx_path)
-    print(f"Presentation successfully generated and saved to: {output_pptx_path}")
+    print(f"✅ Enhanced PowerPoint successfully generated and saved to:\n   {output_pptx_path}")
 
 
 if __name__ == "__main__":

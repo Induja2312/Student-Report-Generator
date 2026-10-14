@@ -94,8 +94,8 @@ Streamlit will automatically open your default browser at `http://localhost:8501
 
 ### Step 6: Test with Sample Data
 1. Look at the left sidebar under **"Classroom Demo Presets"**.
-2. Select a profile (e.g. *Aarav Sharma* or *Priya Patel*) and click **"Load Profile into Form"**.
-3. Notice how all inputs (Name, Roll No, Department, Attendance, Marks) populate automatically.
+2. Select a profile (e.g. *Induja* or *Bhuvisha*) and click **"Load Profile into Form"**.
+3. Notice how all inputs (Name, Roll No, Department: MCA, Attendance, Marks) populate automatically.
 4. Click the **"🚀 Generate Personalized Report"** button.
 
 ### Step 7: Generate & Download PDF

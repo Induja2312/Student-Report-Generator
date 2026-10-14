@@ -31,34 +31,49 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for modern academic dashboard styling
+# Custom CSS for modern warm cream academic dashboard styling
 st.markdown("""
 <style>
-    /* Global Typography & Background adjustments */
-    .main {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    /* Warm Cream Background for Entire Application */
+    .stApp {
+        background-color: #FAF7EE !important;
+        color: #2A201A !important;
     }
     
-    /* Header Card */
+    .main {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background-color: #FAF7EE !important;
+    }
+    
+    /* Header Card with Rich Warm Espresso Gradient */
     .main-header {
-        background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
-        color: #FFFFFF;
+        background: linear-gradient(135deg, #3A2A1E 0%, #20150F 100%);
+        color: #FFFDF9;
         padding: 24px 30px;
         border-radius: 12px;
         margin-bottom: 24px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 14px rgba(50, 30, 15, 0.15);
+        border: 1px solid #523C2D;
     }
     .main-header h1 {
         font-size: 26px;
         font-weight: 800;
         margin: 0;
-        color: #F8FAFC;
+        color: #FFF8EE !important;
     }
     .main-header p {
         font-size: 14px;
-        color: #94A3B8;
+        color: #DBCAB7 !important;
         margin-top: 6px;
         margin-bottom: 0;
+    }
+
+    /* High Visibility Typography on Cream Canvas */
+    h1, h2, h3, h4, h5, h6, p, label, .stMarkdown, div[data-testid="stMarkdownContainer"] p {
+        color: #2A201A !important;
+    }
+    .main-header h1, .main-header p, .stButton > button, .stDownloadButton > button {
+        color: #FFFFFF !important;
     }
 
     /* Metric Badges */
@@ -70,22 +85,64 @@ st.markdown("""
         font-size: 13px;
     }
 
-    /* Sidebar box */
+    /* Sidebar Styling */
+    section[data-testid="stSidebar"] {
+        background-color: #F3EDE2 !important;
+        border-right: 1px solid #E2D7C7 !important;
+    }
+    section[data-testid="stSidebar"] * {
+        color: #2A201A !important;
+    }
     .sidebar-box {
-        background-color: #F8FAFC;
-        border: 1px solid #E2E8F0;
+        background-color: #FFFDF8;
+        border: 1px solid #E2D7C7;
         border-radius: 8px;
         padding: 14px;
         margin-bottom: 16px;
     }
 
-    /* Generate Button */
-    .stButton > button {
+    /* Metric Cards */
+    div[data-testid="stMetric"] {
+        background-color: #FFFDF8 !important;
+        border: 1px solid #E5DACB !important;
+        border-radius: 10px !important;
+        padding: 14px 18px !important;
+        box-shadow: 0 2px 8px rgba(70, 50, 30, 0.05) !important;
+    }
+    div[data-testid="stMetricLabel"] p {
+        color: #6B5848 !important;
+        font-weight: 600 !important;
+    }
+    div[data-testid="stMetricValue"] div {
+        color: #2A201A !important;
+        font-weight: 800 !important;
+    }
+
+    /* Form Input Fields Visibility */
+    div[data-baseweb="input"], div[data-baseweb="select"] {
+        background-color: #FFFFFF !important;
+        border-color: #D6C8B5 !important;
+        border-radius: 8px !important;
+    }
+    input {
+        color: #2A201A !important;
+    }
+
+    /* Buttons in Warm Mahogany */
+    .stButton > button, .stDownloadButton > button {
         width: 100%;
-        border-radius: 8px;
-        font-weight: 700;
-        font-size: 15px;
-        padding: 10px 20px;
+        background-color: #8B4513 !important;
+        color: #FFFFFF !important;
+        border: none !important;
+        border-radius: 8px !important;
+        font-weight: 700 !important;
+        font-size: 15px !important;
+        padding: 10px 20px !important;
+        transition: all 0.2s ease !important;
+    }
+    .stButton > button:hover, .stDownloadButton > button:hover {
+        background-color: #A0522D !important;
+        color: #FFFFFF !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -101,8 +158,8 @@ if "chart_bytes" not in st.session_state:
 if "pdf_bytes" not in st.session_state:
     st.session_state.pdf_bytes = None
 
-# Initialize form field state defaults
-default_sample_key = "Aarav Sharma (High Achiever - Excellent)"
+# Initialize form field state defaults with Induja (MCA - 25MX101)
+default_sample_key = "Induja (High Achiever - Excellent)"
 init_data = SAMPLE_STUDENTS[default_sample_key]
 
 if "name_val" not in st.session_state:
@@ -208,17 +265,17 @@ with tab_input:
             name_input = st.text_input(
                 "Full Name:",
                 value=st.session_state.name_val,
-                placeholder="e.g. Aarav Sharma",
+                placeholder="e.g. Induja",
                 help="Enter student's official full name."
             )
             roll_input = st.text_input(
                 "Roll Number / Registration ID:",
                 value=st.session_state.roll_val,
-                placeholder="e.g. 24CS801",
+                placeholder="e.g. 25MX101",
                 help="Unique student identification number."
             )
             dept_input = st.selectbox(
-                "Academic Department:",
+                "Academic Department (Recommended: MCA):",
                 options=DEPARTMENTS,
                 index=DEPARTMENTS.index(st.session_state.dept_val) if st.session_state.dept_val in DEPARTMENTS else 0
             )
