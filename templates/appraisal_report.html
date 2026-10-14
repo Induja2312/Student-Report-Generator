@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Appraisal Report Template</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #1e293b;
+            background-color: #f8fafc;
+            padding: 20px;
+            margin: 0;
+        }
+        .report-card {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
+        .header h1 {
+            font-size: 20px;
+            margin: 4px 0;
+            color: #0f172a;
+        }
+        .header .institution {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: #475569;
+            text-transform: uppercase;
+        }
+        .header .meta {
+            font-size: 12px;
+            color: #64748b;
+        }
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid #4f46e5;
+            margin-bottom: 24px;
+        }
+        .profile-item label {
+            font-size: 11px;
+            color: #64748b;
+            display: block;
+            text-transform: uppercase;
+        }
+        .profile-item span {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .metric-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+        .metric-box .label {
+            font-size: 11px;
+            color: #64748b;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .metric-box .val {
+            font-size: 18px;
+            font-weight: 800;
+            color: #1e293b;
+            margin-top: 4px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-bottom: 24px;
+        }
+        th, td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        th {
+            background: #f1f5f9;
+            color: #475569;
+            text-transform: uppercase;
+            font-size: 11px;
+            text-align: left;
+        }
+        .feedback-box {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 18px;
+            margin-bottom: 24px;
+        }
+        .feedback-box h3 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            color: #1e40af;
+        }
+        .feedback-box ul {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        .signatures {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 16px;
+            border-top: 1px dashed #cbd5e1;
+            font-size: 12px;
+            color: #64748b;
+            text-align: center;
+        }
+        .sig-line {
+            width: 160px;
+            border-top: 1px solid #94a3b8;
+            padding-top: 4px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="report-card">
+        <div class="header">
+            <div class="institution">{{ institution_name }}</div>
+            <h1>{{ report_title }}</h1>
+            <div class="meta">{{ academic_year }} &bull; Issued: {{ report_date }}</div>
+        </div>
+
+        <div class="profile-grid">
+            <div class="profile-item"><label>Student Name</label><span>{{ student_name }}</span></div>
+            <div class="profile-item"><label>Roll Number</label><span>{{ roll_no }}</span></div>
+            <div class="profile-item"><label>Department</label><span>{{ department }}</span></div>
+            <div class="profile-item"><label>Semester</label><span>{{ semester }}</span></div>
+            <div class="profile-item"><label>Attendance</label><span>{{ attendance }}% ({{ attendance_status }})</span></div>
+            <div class="profile-item"><label>Academic Standing</label><span>{{ performance_category }}</span></div>
+        </div>
+
+        <div class="metrics-grid">
+            <div class="metric-box"><div class="label">Total Marks</div><div class="val">{{ total_marks }} / {{ max_marks }}</div></div>
+            <div class="metric-box"><div class="label">Aggregate %</div><div class="val">{{ percentage }}%</div></div>
+            <div class="metric-box"><div class="label">Average</div><div class="val">{{ average_marks }} / 100</div></div>
+            <div class="metric-box"><div class="label">Top Subject</div><div class="val">{{ highest_subject }}</div></div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Course Subject</th>
+                    <th style="text-align:center;">Max Marks</th>
+                    <th style="text-align:center;">Marks Scored</th>
+                    <th style="text-align:center;">Letter Grade</th>
+                    <th style="text-align:center;">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Marks rows populated dynamically by Python template engine -->
+                {{ coursework_table_rows }}
+            </tbody>
+        </table>
+
+        <div class="feedback-box">
+            <h3>📋 Personalized Academic Appraisal</h3>
+            <ul>
+                {{ feedback_list_items }}
+            </ul>
+        </div>
+
+        <div class="signatures">
+            <div class="sig-line">Class Advisor</div>
+            <div class="sig-line">Head of Department</div>
+            <div class="sig-line">Dean of Academics</div>
+        </div>
+    </div>
+</body>
+</html>
